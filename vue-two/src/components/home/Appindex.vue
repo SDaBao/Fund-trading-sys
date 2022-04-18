@@ -5,7 +5,7 @@
     <router-link to="/customerinformation">客户信息</router-link>
     <router-link to="/fundmanagement">资金管理</router-link> -->
     <el-container>
-      <el-header class="topbar" style="background-color: #409EFF">
+      <el-header class="topbar" style="background-color: #409eff">
         <div class="nav">
           <span style="color: #fff; font-size: 25px; position: absolute"
             >理财交易销售系统</span
@@ -16,11 +16,17 @@
               <el-popover placement="top" width="180" v-model="visible">
                 <p>确定退出登录吗？</p>
                 <div style="text-align: right; margin: 10px 0 0">
-                  <el-button size="mini" type="text" @click="visible = false">取消</el-button>
-                  <el-button type="primary" size="mini" @click="logout">确定</el-button>
+                  <el-button size="mini" type="text" @click="visible = false"
+                    >取消</el-button
+                  >
+                  <el-button type="primary" size="mini" @click="logout"
+                    >确定</el-button
+                  >
                 </div>
                 <!-- <el-button type="text" slot="reference">{{this.$store.getters.getUser.userName}}</el-button> -->
-                <el-button type="goon" slot="reference">小明</el-button>
+                <el-button type="goon" slot="reference">{{
+                  this.$store.getters.getAdmin
+                }}</el-button>
               </el-popover>
             </li>
           </ul>
@@ -29,7 +35,6 @@
       <el-container>
         <el-aside width="250px">
           <el-menu
-            default-active="2"
             class="el-menu-vertical-demo"
             @open="handleOpen"
             @close="handleClose"
@@ -38,32 +43,45 @@
             text-color="#303133"
             active-text-color="#409EFF"
             style="text-align: left; padding-top: 10px"
+            router
+            :default-active="$route.path"
           >
             <el-menu-item-group title="柜台">
-              <el-menu-item index="1-1">
+              <el-menu-item
+                index="/index/customersearch"
+                @click="isfirst = false"
+              >
                 <i class="el-icon-s-custom"></i>
                 <span slot="title">客户检索</span>
               </el-menu-item>
-              <el-menu-item index="1-2">
-                <i class="el-icon-info"></i>
-                <span slot="title">客户信息</span>
-              </el-menu-item>
-              <el-menu-item index="1-3">
-                <i class="el-icon-s-finance"></i>
-                <span slot="title">资金管理</span>
-              </el-menu-item>
-              <el-menu-item index="1-4">
-                <i class="el-icon-star-on"></i>
-                <span slot="title">持仓</span>
-              </el-menu-item>
-              <el-menu-item index="1-5">
-                <i class="el-icon-s-marketing"></i>
-                <span slot="title">申购</span>
-              </el-menu-item>
-              <el-menu-item index="1-6">
-                <i class="el-icon-search"></i>
-                <span slot="title">订单查询</span>
-              </el-menu-item>
+              <el-submenu index="1" v-if="getShowLogin">
+                <template slot="title" @click="isfirst = false">
+                  <i class="el-icon-location"></i>
+                  <span>{{ this.$store.getters.getUser }}</span>
+                </template>
+                <el-menu-item-group>
+                  <el-menu-item index="/index/customerinformation">
+                    <i class="el-icon-info"></i>
+                    <span slot="title">客户信息</span>
+                  </el-menu-item>
+                  <el-menu-item index="/index/fundmanagement">
+                    <i class="el-icon-s-finance"></i>
+                    <span slot="title">资金管理</span>
+                  </el-menu-item>
+                  <el-menu-item index="/index/obtainfund">
+                    <i class="el-icon-star-on"></i>
+                    <span slot="title">持仓</span>
+                  </el-menu-item>
+                  <el-menu-item index="/index/productlist">
+                    <i class="el-icon-s-marketing"></i>
+                    <span slot="title">申购</span>
+                  </el-menu-item>
+                  <el-menu-item index="/index/businesslist">
+                    <i class="el-icon-search"></i>
+                    <span slot="title">订单查询</span>
+                  </el-menu-item>
+                </el-menu-item-group>
+              </el-submenu>
             </el-menu-item-group>
             <el-divider style="margin: 10px"></el-divider>
             <el-menu-item-group title="运维">
@@ -87,6 +105,7 @@
           </el-menu>
         </el-aside>
         <el-main style="overflow: hidden; padding: 0">
+          <customer-search v-if="isfirst" @close-page="closepage()"></customer-search>
           <router-view />
         </el-main>
       </el-container>
@@ -95,14 +114,43 @@
 </template>
 
 <script>
+import CustomerSearch from './CustomerSearch.vue'
+import CustomerInformation from './CustomerInformation.vue'
+import { mapActions, mapGetters, mapState, mapMutations } from 'vuex'
+
 export default {
+  components: { CustomerInformation, CustomerSearch },
   name: 'AppIndex',
   data () {
     return {
-      is_admin: false
+      is_admin: false,
+      visible: false,
+      isfirst: true
     }
   },
+  created () {
+    // 获取浏览器localStorage，判断用户是否已经登录
+    if (localStorage.getItem('admin')) {
+      // 如果已经登录，设置vuex登录状态
+      this.actUser(JSON.parse(localStorage.getItem('admin')))
+    }
+  },
+  computed: {
+    ...mapGetters(['getUser', 'getShowLogin']),
+    ...mapState(['user', 'admin', 'showLogin']),
+    ...mapMutations(['setUser', 'setShowLogin']),
+    ...mapActions(['actUser', 'actShowLogin'])
+  },
   methods: {
+    logout () {
+      this.visible = false
+      // 清空本地登录信息
+      localStorage.setItem('user', '')
+      // 清空vuex登录信息
+      // this.setAdmin('')
+      // this.notifySucceed('成功退出登录')
+      this.$router.push({ path: '/login' })
+    },
     handleOpen (key, keyPath) {
       console.log(key, keyPath)
     },
@@ -111,23 +159,9 @@ export default {
     },
     handleSelect (key, keyPath) {
       console.log(key, keyPath)
-      if (key === '1-1') {
-        this.$router.push({ path: '/index/customersearch' })
-      } else if (key === '1-2') {
-        this.$router.push({ path: '/index/customerinformation' })
-      } else if (key === '1-4') {
-        this.$router.push({ path: '/index/fundmanagement' })
-      } else if (key === '1-3') {
-        this.$router.push({ path: '/index/fundmanagement' })
-      } else if (key === '1-5') {
-        this.content = 'product_list.html'
-      } else if (key === '1-6') {
-        this.content = 'deal_list.html'
-      } else if (key === '2-3') {
-        this.content = 'product_manage_list.html'
-      } else if (key === '2-4') {
-        this.content = 'deal_list.html'
-      }
+    },
+    closepage () {
+      this.isfirst = false
     }
   }
 }
@@ -137,7 +171,7 @@ export default {
 .el-container {
   height: 100vh;
 }
-.el-header ,
+.el-header,
 .el-footer {
   background-color: #8bc4fd;
   color: #333;
@@ -145,14 +179,14 @@ export default {
   line-height: 60px;
 }
 .el-aside {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   color: #333;
   text-align: center;
   line-height: 200px;
 }
 
 .el-main {
-  background-color: #B8DBFF;
+  background-color: #b8dbff;
   color: #333;
   /* text-align: left; */
   /* line-height: 160px; */
@@ -179,21 +213,21 @@ export default {
 
 .el-button--goon.is-active,
 .el-button--goon:active {
-  background: #409EFF;
-  border-color: #409EFF;
+  background: #409eff;
+  border-color: #409eff;
   color: #303133;
 }
 
 .el-button--goon:focus,
 .el-button--goon:hover {
   background: #8bc4fd;
-  border-color: #409EFF;
+  border-color: #409eff;
   color: #fff;
 }
 
 .el-button--goon {
-  color: #FFF;
-  background-color: #409EFF;
-  border-color: #409EFF;
+  color: #fff;
+  background-color: #409eff;
+  border-color: #409eff;
 }
 </style>

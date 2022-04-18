@@ -62,7 +62,7 @@ export default {
 
 <style>
 #poster {
-  background: url("../assets/hundsun.jpg") no-repeat;
+  background: url("../assets/img/hundsun.jpg") no-repeat;
   background-position: center;
   height: 80%;
   width: 100%;

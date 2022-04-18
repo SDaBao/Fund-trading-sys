@@ -14,6 +14,9 @@
         <el-row>
           <h1>客户检索</h1>
         </el-row>
+        <!-- <el-row>
+          <p>{{ this.$store.state.tableData.name }}</p>
+        </el-row> -->
         <el-row>
           <el-col :span="22" style="text-align: left">
             <el-input
@@ -35,15 +38,21 @@
               :lock-scroll="false"
               width="30%"
             >
-              <createCustomerInformation :isShow="'true'" @close-form="closeform()"></createCustomerInformation>
+              <createCustomerInformation
+                :isShow="'true'"
+                @close-form="closeform()"
+              ></createCustomerInformation>
             </el-dialog>
+          </el-col>
+          <el-col :span="4">
+            <el-button @click="gettable()">get</el-button>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <template>
               <el-table
-                :data="tmpData"
+                :data="this.$store.state.user.tableData"
                 style="width: 100%"
                 :header-cell-style="headStyle"
                 :cell-style="rowStyle"
@@ -73,7 +82,11 @@
                   <template slot-scope="scope">
                     <el-button
                       size="mini"
-                      @click="toCustomerInformation()"
+                      @click="
+                        toCustomerInformation();
+                        close();
+                        userLogin();
+                      "
                       >登入
                     </el-button>
                   </template>
@@ -95,49 +108,42 @@ export default {
   components: {
     createCustomerInformation
   },
+  props: { isShow: String },
   created () {
+    // this.getlist()
     this.tmpData = this.tableData
   },
   data () {
     return {
       input: '',
-      tableData: [
-        {
-          name: 'Gu Wei',
-          type: '个人',
-          card_type: '身份证',
-          card_id: '330102200103077256'
-        },
-        {
-          name: 'John Onions',
-          type: '个人',
-          card_type: '身份证',
-          card_id: '330102200103078232'
-        },
-        {
-          name: 'Gregary Jim',
-          type: '个人',
-          card_type: '身份证',
-          card_id: '330102200103078232'
-        },
-        {
-          name: 'Salome Thackeray',
-          type: '个人',
-          card_type: '身份证',
-          card_id: '330102200103078232'
-        },
-        {
-          name: 'Zoe Giles',
-          type: '个人',
-          card_type: '身份证',
-          card_id: '330102200103078232'
-        }
-      ],
       tmpData: [],
       dialogFormVisible: false
     }
   },
   methods: {
+    // getlist () {
+    //   this.$axios
+    //     .get('/api/user/info', {
+    //       params: {
+    //         cstmr_id: '10000'
+    //       }
+    //     })
+    //     .then((res) => {
+    //       console.log(res)
+    //       this.$store.state.user.tableData.name = res.data.cstmr_name
+    //       this.$store.state.user.tableData.type = res.data.cstmr_type
+    //       this.$store.state.user.tableData.card_id = res.data.doctument_num
+    //       this.$store.state.user.tableData.card_type = res.data.doctument_type
+    //       console.log(this.$store.state.user.tableData)
+    //     })
+    //     .catch((failResponse) => {})
+    // },
+    gettable () {
+      console.log(this.$store.state.user)
+      console.log('test1')
+      console.log(this.$store.state.admin)
+      console.log(this.$store.state.user.tableData)
+    },
     submitForm () {
       this.dialogFormVisible = true
     },
@@ -149,6 +155,10 @@ export default {
           data.card_id.toLowerCase().includes(this.input.toLowerCase())
       )
     },
+    userLogin () {
+      this.$store.commit('setShowLogin', true)
+      this.$store.commit('setUser', 'Ming')
+    },
     headStyle () {
       return 'text-align:center'
     },
@@ -158,8 +168,11 @@ export default {
     closeform () {
       this.dialogFormVisible = false
     },
+    close () {
+      this.$emit('close-page')
+    },
     toCustomerInformation () {
-      this.$router.replace({ path: '/customerinformation' })
+      this.$router.push({ path: '/index/customerinformation' })
     }
   }
 }
