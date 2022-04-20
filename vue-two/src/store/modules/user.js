@@ -1,6 +1,7 @@
 export default {
   state: {
     user: '', // 登录的用户
+    user_id: '',
     showLogin: false, // 用于控制是否显示登录组件
     tableData: [
       // {
@@ -8,7 +9,7 @@ export default {
       //   type: '个人',
       //   card_type: '身份证',
       //   card_id: '330102200103077256'
-      // }
+      // },
     ]
   },
   getters: {
