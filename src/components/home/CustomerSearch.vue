@@ -41,9 +41,9 @@
               ></createCustomerInformation>
             </el-dialog>
           </el-col>
-          <el-col :span="4">
+          <!-- <el-col :span="4">
             <el-button @click="gettable()">get</el-button>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row>
           <el-col :span="24">
@@ -108,7 +108,7 @@ export default {
   props: { isShow: String },
   created () {
     this.$store.commit('setTable')
-    this.getlist()
+    // this.getlist()
     // this.tmpData = this.tableData
   },
   data () {
@@ -145,13 +145,13 @@ export default {
       // console.log(this.myObj.name)
       this.$store.commit('setcstmrTable', {
         key1: 'name',
-        name: myObj.data.cstmr_name,
+        name: myObj.cstmr_name,
         key2: 'type',
-        type: myObj.data.cstmr_type,
+        type: myObj.cstmr_type,
         key3: 'card_type',
-        card_type: myObj.data.document_type,
+        card_type: myObj.document_type,
         key4: 'card_id',
-        card_id: myObj.data.document_num
+        card_id: myObj.document_num
       })
       // console.log(this.$store.state.user.tableData)
     },
@@ -165,6 +165,7 @@ export default {
       //     data.name.toLowerCase().includes(this.input.toLowerCase()) ||
       //     data.card_id.toLowerCase().includes(this.input.toLowerCase())
       // )
+      this.$store.commit('setTable')
       this.$axios
         .get('/api/user/search', {
           params: {
@@ -172,8 +173,11 @@ export default {
           }
         })
         .then((res) => {
-          console.log(res)
-          this.gettable(res)
+          console.log(res.data.n)
+          for (var i = 0; i < res.data.n; ++i) {
+            console.log(i)
+            this.gettable(res.data.user_info[i])
+          }
           console.log(this.$store.state.user.tableData)
         })
         .catch((failResponse) => {})
