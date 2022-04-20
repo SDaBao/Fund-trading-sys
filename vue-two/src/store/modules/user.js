@@ -3,12 +3,12 @@ export default {
     user: '', // 登录的用户
     showLogin: false, // 用于控制是否显示登录组件
     tableData: [
-      {
-        name: 'Gu Wei',
-        type: '个人',
-        card_type: '身份证',
-        card_id: '330102200103077256'
-      }
+      // {
+      //   name: 'Gu Wei',
+      //   type: '个人',
+      //   card_type: '身份证',
+      //   card_id: '330102200103077256'
+      // }
     ]
   },
   getters: {
@@ -31,8 +31,18 @@ export default {
       state.showLogin = data
       console.log(state.showLogin)
     },
-    setTable (state, data) {
-      state.tableData.name = data
+    setcstmrTable (state, data) {
+      // state.tableData[0][data.key] = data.name
+      // console.log(state.tableData[0][data.key])
+      state.tableData.push({
+        name: data.name,
+        type: data.type,
+        card_type: data.card_type,
+        card_id: data.card_id
+      })
+    },
+    setTable (state) {
+      state.tableData = []
     }
   },
   actions: {

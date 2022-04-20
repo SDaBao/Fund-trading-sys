@@ -14,9 +14,6 @@
         <el-row>
           <h1>客户检索</h1>
         </el-row>
-        <!-- <el-row>
-          <p>{{ this.$store.state.tableData.name }}</p>
-        </el-row> -->
         <el-row>
           <el-col :span="22" style="text-align: left">
             <el-input
@@ -85,7 +82,7 @@
                       @click="
                         toCustomerInformation();
                         close();
-                        userLogin();
+                        userLogin(scope.row.name);
                       "
                       >登入
                     </el-button>
@@ -110,54 +107,80 @@ export default {
   },
   props: { isShow: String },
   created () {
-    // this.getlist()
-    this.tmpData = this.tableData
+    this.$store.commit('setTable')
+    this.getlist()
+    // this.tmpData = this.tableData
   },
   data () {
     return {
       input: '',
       tmpData: [],
       dialogFormVisible: false
+      // myObj: {
+      //   cstmr_name: 'Gu',
+      //   cstmr_type: 1,
+      //   doctument_type: 0,
+      //   doctument_num: '330102200103077256'
+      // }
     }
   },
   methods: {
-    // getlist () {
-    //   this.$axios
-    //     .get('/api/user/info', {
-    //       params: {
-    //         cstmr_id: '10000'
-    //       }
-    //     })
-    //     .then((res) => {
-    //       console.log(res)
-    //       this.$store.state.user.tableData.name = res.data.cstmr_name
-    //       this.$store.state.user.tableData.type = res.data.cstmr_type
-    //       this.$store.state.user.tableData.card_id = res.data.doctument_num
-    //       this.$store.state.user.tableData.card_type = res.data.doctument_type
-    //       console.log(this.$store.state.user.tableData)
-    //     })
-    //     .catch((failResponse) => {})
-    // },
-    gettable () {
-      console.log(this.$store.state.user)
-      console.log('test1')
-      console.log(this.$store.state.admin)
-      console.log(this.$store.state.user.tableData)
+    getlist () {
+      this.$axios
+        .get('/api/user/info', {
+          params: {
+            cstmr_id: '10000'
+          }
+        })
+        .then((res) => {
+          console.log(res)
+          this.gettable(res)
+          console.log(this.$store.state.user.tableData)
+        })
+        .catch((failResponse) => {})
+    },
+    gettable (myObj) {
+      // console.log(this.$store.state.user)
+      // console.log(this.$store.state.user.tableData)
+      // console.log(this.myObj.name)
+      this.$store.commit('setcstmrTable', {
+        key1: 'name',
+        name: myObj.data.cstmr_name,
+        key2: 'type',
+        type: myObj.data.cstmr_type,
+        key3: 'card_type',
+        card_type: myObj.data.document_type,
+        key4: 'card_id',
+        card_id: myObj.data.document_num
+      })
+      // console.log(this.$store.state.user.tableData)
     },
     submitForm () {
       this.dialogFormVisible = true
     },
     SearchInput () {
-      this.tmpData = this.tableData.filter(
-        (data) =>
-          !this.input ||
-          data.name.toLowerCase().includes(this.input.toLowerCase()) ||
-          data.card_id.toLowerCase().includes(this.input.toLowerCase())
-      )
+      // this.tmpData = this.tableData.filter(
+      //   (data) =>
+      //     !this.input ||
+      //     data.name.toLowerCase().includes(this.input.toLowerCase()) ||
+      //     data.card_id.toLowerCase().includes(this.input.toLowerCase())
+      // )
+      this.$axios
+        .get('/api/user/search', {
+          params: {
+            keyword: this.input
+          }
+        })
+        .then((res) => {
+          console.log(res)
+          this.gettable(res)
+          console.log(this.$store.state.user.tableData)
+        })
+        .catch((failResponse) => {})
     },
-    userLogin () {
+    userLogin (cstmrname) {
       this.$store.commit('setShowLogin', true)
-      this.$store.commit('setUser', 'Ming')
+      this.$store.commit('setUser', cstmrname)
     },
     headStyle () {
       return 'text-align:center'
