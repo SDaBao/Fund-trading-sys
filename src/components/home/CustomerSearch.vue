@@ -41,15 +41,15 @@
               ></createCustomerInformation>
             </el-dialog>
           </el-col>
-          <el-col :span="4">
+          <!-- <el-col :span="4">
             <el-button @click="gettable()">get</el-button>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row>
           <el-col :span="24">
             <template>
               <el-table
-                :data="this.$store.state.user.tableData"
+                :data="this.$store.state.cstmrTable.tableData"
                 style="width: 100%"
                 :header-cell-style="headStyle"
                 :cell-style="rowStyle"
@@ -82,7 +82,7 @@
                       @click="
                         toCustomerInformation();
                         close();
-                        userLogin(scope.row.name);
+                        userLogin(scope.row.name, scope.row.user_id);
                       "
                       >登入
                     </el-button>
@@ -107,7 +107,7 @@ export default {
   },
   props: { isShow: String },
   created () {
-    this.$store.commit('setTable')
+    // this.$store.commit('setTable')
     this.getlist()
     // this.tmpData = this.tableData
   },
@@ -126,16 +126,19 @@ export default {
   },
   methods: {
     getlist () {
+      this.$store.commit('setTable')
       this.$axios
-        .get('/api/user/info', {
+        .get('/api/user/search', {
           params: {
-            cstmr_id: '10000'
+            keyword: ''
           }
         })
         .then((res) => {
-          console.log(res)
-          this.gettable(res)
-          console.log(this.$store.state.user.tableData)
+          console.log(res.data.n)
+          for (var i = 0; i < res.data.n; ++i) {
+            this.gettable(res.data.user_info[i])
+          }
+          console.log(this.$store.state.cstmrTable.tableData)
         })
         .catch((failResponse) => {})
     },
@@ -144,14 +147,16 @@ export default {
       // console.log(this.$store.state.user.tableData)
       // console.log(this.myObj.name)
       this.$store.commit('setcstmrTable', {
+        key0: 'user_id',
+        user_id: myObj.cstmr_id,
         key1: 'name',
-        name: myObj.data.cstmr_name,
+        name: myObj.cstmr_name,
         key2: 'type',
-        type: myObj.data.cstmr_type,
+        type: myObj.cstmr_type,
         key3: 'card_type',
-        card_type: myObj.data.document_type,
+        card_type: myObj.document_type,
         key4: 'card_id',
-        card_id: myObj.data.document_num
+        card_id: myObj.document_num
       })
       // console.log(this.$store.state.user.tableData)
     },
@@ -165,6 +170,7 @@ export default {
       //     data.name.toLowerCase().includes(this.input.toLowerCase()) ||
       //     data.card_id.toLowerCase().includes(this.input.toLowerCase())
       // )
+      this.$store.commit('setTable')
       this.$axios
         .get('/api/user/search', {
           params: {
@@ -172,15 +178,21 @@ export default {
           }
         })
         .then((res) => {
-          console.log(res)
-          this.gettable(res)
-          console.log(this.$store.state.user.tableData)
+          console.log(res.data.n)
+          for (var i = 0; i < res.data.n; ++i) {
+            this.gettable(res.data.user_info[i])
+          }
+          console.log(this.$store.state.cstmrTable.tableData)
         })
         .catch((failResponse) => {})
     },
-    userLogin (cstmrname) {
-      this.$store.commit('setShowLogin', true)
+    userLogin (cstmrname, cstmrId) {
+      this.$store.commit('cleanUser')
+      this.$store.commit('cleanUserID')
+      this.$store.commit('cleanUserInfo')
       this.$store.commit('setUser', cstmrname)
+      this.$store.commit('setUserID', cstmrId)
+      this.$store.commit('setShowLogin', true)
     },
     headStyle () {
       return 'text-align:center'
