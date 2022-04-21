@@ -29,21 +29,21 @@
             </el-descriptions-item>
           </el-descriptions>
         </el-row>
-        <el-row>
+        <el-row v-for="(item, i) in this.$store.state.card.card_info" :key="i">
           <el-descriptions class="margin-top" :column="2" :size="size" border>
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-mobile-phone"></i>
-                银行卡1卡号
+                银行卡{{ i+1 }}卡号
               </template>
-              {{ this.$store.state.card.card_info[0].credit_id }}
+              {{ item.credit_id }}
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-location-outline"></i>
-                银行卡1余额
+                银行卡{{ i+1 }}余额
               </template>
-              {{ this.$store.state.card.card_info[0].credit_balance }}
+              {{ item.credit_balance }}
             </el-descriptions-item>
           </el-descriptions>
         </el-row>
