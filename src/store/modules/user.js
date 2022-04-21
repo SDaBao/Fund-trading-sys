@@ -3,14 +3,7 @@ export default {
     user: '', // 登录的用户
     user_id: '',
     showLogin: false, // 用于控制是否显示登录组件
-    tableData: [
-      // {
-      //   name: 'Gu Wei',
-      //   type: '个人',
-      //   card_type: '身份证',
-      //   card_id: '330102200103077256'
-      // },
-    ]
+    user_info: []
   },
   getters: {
     getUser (state) {
@@ -19,8 +12,11 @@ export default {
     getShowLogin (state) {
       return state.showLogin
     },
-    getTable (state) {
-      return state.tableData
+    getUserID (state) {
+      return state.user_id
+    },
+    getUserInfo (state) {
+      return state.user_info
     }
   },
   mutations: {
@@ -32,18 +28,25 @@ export default {
       state.showLogin = data
       console.log(state.showLogin)
     },
-    setcstmrTable (state, data) {
-      // state.tableData[0][data.key] = data.name
-      // console.log(state.tableData[0][data.key])
-      state.tableData.push({
-        name: data.name,
-        type: data.type,
-        card_type: data.card_type,
-        card_id: data.card_id
-      })
+    setUserID (state, data) {
+      state.user_id = data
+      console.log(state.user_id)
     },
-    setTable (state) {
-      state.tableData = []
+    setUserInfo (state, data) {
+      state.user_info.push(data)
+      console.log(state.user_info)
+    },
+    cleanUserInfo (state) {
+      state.user_info = []
+      console.log(state.user_info)
+    },
+    cleanUser (state) {
+      state.user = ''
+      console.log(state.user)
+    },
+    cleanUserID (state) {
+      state.user_id = ''
+      console.log(state.user_id)
     }
   },
   actions: {
@@ -54,8 +57,11 @@ export default {
       console.log('actShowLogin')
       commit('setShowLogin', data)
     },
-    actTable ({ commit }, data) {
-      commit('setTable', data)
+    actUserID ({ commit }, data) {
+      commit('setUserID', data)
+    },
+    actUserInfo ({ commit }, data) {
+      commit('setUserInfo', data)
     }
   }
 }

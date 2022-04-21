@@ -8,3 +8,8 @@ export const CSTMR_TYPE_ORM = {
   0: '个人',
   1: '机构'
 }
+export const RISK_RATING_ORM = {
+  0: '低',
+  1: '中',
+  2: '高'
+}
