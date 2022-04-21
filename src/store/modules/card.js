@@ -29,6 +29,9 @@ export default {
     },
     setCardNum (state, data) {
       state.cardNum = data
+    },
+    cleanCardInfo (state) {
+      state.card_info = []
     }
   },
   actions: {

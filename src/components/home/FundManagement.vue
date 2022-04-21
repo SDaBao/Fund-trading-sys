@@ -74,6 +74,7 @@ export default {
         .then((res) => {
           // console.log(res.data.card_info.length)
           // console.log(res.data.card_info[0])
+          this.$store.commit('cleanCardInfo')
           this.$store.commit('setCardInfo', res.data.card_info)
           this.$store.commit('setAccountB', res.data.account_balance)
           this.$store.commit('setCardNum', res.data.n)

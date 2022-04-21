@@ -33,7 +33,7 @@ export default new Router({
           name: 'fundmanagement',
           component: FundManagement,
           meta: {
-            requireAuth: true
+            requireAuth: false
           }
         },
         {
@@ -49,7 +49,7 @@ export default new Router({
           name: 'customerinformation',
           component: CustomerInformation,
           meta: {
-            requireAuth: true
+            requireAuth: false
           }
         },
         {
