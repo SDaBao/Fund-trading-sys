@@ -27,10 +27,7 @@
           <el-option label="身份证" value="1"></el-option>
           <el-option label="护照" value="2"></el-option>
           <el-option label="港澳台居住证" value="3"></el-option>
-          <el-option
-            label="组织机构代码证"
-            value="4"
-          ></el-option>
+          <el-option label="组织机构代码证" value="4"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="证件号码" prop="document_num">
@@ -46,7 +43,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')"
+        <el-button type="primary" @click="submitForm()"
           >立即创建</el-button
         >
         <el-button @click="resetForm('ruleForm')">重 置</el-button>
@@ -60,6 +57,9 @@
 export default {
   name: 'createCustomerInformation',
   props: { isShow: String },
+  created () {
+    this.getCstmrID()
+  },
   data () {
     return {
       ruleForm: {
@@ -96,29 +96,45 @@ export default {
     }
   },
   methods: {
-    submitForm (formName) {
+    getCstmrID () {
       let vm = this
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          let params = vm.formName
-          let url = '/api/user/register'
-          this.$axios
-            .get(url, { params })
-            .then((res) => {
-              console.log('请求成功')
-              alert('submit!')
-              this.close()
-              console.log(res)
-            })
-            .catch((error) => {
-              console.log('请求失败')
-              console.log(error)
-            })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+      this.$axios
+        .get('/api/getID')
+        .then((res) => {
+          console.log('请求成功 id=', res)
+          vm.ruleForm.cstmr_id = res.data
+          this.close()
+          console.log(res)
+        })
+        .catch((error) => {
+          console.log('请求失败')
+          console.log(error)
+        })
+    },
+    submitForm () {
+      // let vm = this
+      // this.$refs[formName].validate((valid) => {
+      //   if (valid) {
+      console.log(this.ruleForm)
+      let params = this.ruleForm
+      let url = '/api/addUser'
+      this.$axios
+        .get(url, { params })
+        .then((res) => {
+          console.log('请求成功')
+          alert('submit!')
+          this.close()
+          console.log(res)
+        })
+        .catch((error) => {
+          console.log('请求失败')
+          console.log(error)
+        })
+      //   } else {
+      //     console.log('error submit!!')
+      //     return false
+      //   }
+      // })
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()

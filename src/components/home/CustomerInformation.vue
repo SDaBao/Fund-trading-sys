@@ -19,7 +19,15 @@
             <p style="font-size: 27px">客户基本信息</p>
           </el-col>
           <el-col>
-            <el-button style="float: right" @click="dialogFormVisible = true;initForm()"> 修改 </el-button>
+            <el-button
+              style="float: right"
+              @click="
+                dialogFormVisible = true;
+                initForm();
+              "
+            >
+              修改
+            </el-button>
             <el-dialog
               title="开户"
               :visible.sync="dialogFormVisible"
@@ -68,11 +76,25 @@
                   ></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="submitForm('modifyCstmrForm');dialogFormVisible = false;getUserInfo()"
+                  <el-button
+                    type="primary"
+                    @click="
+                      submitForm();
+                      dialogFormVisible = false;
+                      getUserInfo();
+                    "
                     >确 认</el-button
                   >
-                  <el-button @click="resetForm('modifyCstmrForm')">重 置</el-button>
-                  <el-button @click="dialogFormVisible = false;getUserInfo()">取 消</el-button>
+                  <el-button @click="resetForm('modifyCstmrForm')"
+                    >重 置</el-button
+                  >
+                  <el-button
+                    @click="
+                      dialogFormVisible = false;
+                      getUserInfo();
+                    "
+                    >取 消</el-button
+                  >
                 </el-form-item>
               </el-form>
             </el-dialog>
@@ -99,6 +121,7 @@
 
 <script>
 import { CSTMR_TYPE_ORM, DOCUMENT_TYPE_ORM } from '../../constant'
+// import $ from 'jquery'
 
 export default {
   name: 'CustomerInformation',
@@ -110,7 +133,9 @@ export default {
     this.documentTypeOrm = DOCUMENT_TYPE_ORM
     return {
       dialogFormVisible: false,
-      modifyCstmrForm: {},
+      modifyCstmrForm: {
+        account_balance: Number
+      },
       rules: {
         cstmr_name: [
           { required: true, message: '请输入客户姓名', trigger: 'blur' },
@@ -146,34 +171,27 @@ export default {
           }
         })
         .then((res) => {
+          this.$store.commit('cleanUserInfo')
           this.$store.commit('setUserInfo', res.data)
-          console.log(this.$store.state.user.user_info)
         })
         .catch((failResponse) => {})
     },
-    submitForm (formName) {
-      let vm = this
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          let params = vm.formName
-          let url = '/api/user/register' // 暂时没有修改客户信息的接口，所以这里执行无效
-          this.$axios
-            .get(url, { params })
-            .then((res) => {
-              console.log('请求成功')
-              alert('submit!')
-              this.close()
-              console.log(res)
-            })
-            .catch((error) => {
-              console.log('请求失败')
-              console.log(error)
-            })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+    submitForm () {
+      // let vm = this
+      let params = this.modifyCstmrForm
+      let url = '/api/user/update' // 暂时没有修改客户信息的接口，所以这里执行无效
+      console.log(this.modifyCstmrForm)
+      this.$axios
+        .get(url, { params })
+        .then((res) => {
+          console.log('请求成功')
+          alert('submit!')
+          console.log(res)
+        })
+        .catch((error) => {
+          console.log('请求失败')
+          console.log(error)
+        })
     },
     headStyle () {
       return 'text-align:center'
@@ -182,7 +200,11 @@ export default {
       return 'text-align:center'
     },
     initForm () {
-      this.modifyCstmrForm = JSON.parse(JSON.stringify(this.$store.state.user.user_info[0]))
+      this.modifyCstmrForm = JSON.parse(
+        JSON.stringify(this.$store.state.user.user_info[0])
+      )
+      // if (!$.isEmptyObject(this.modifyCstmrForm.account_balance)) { this.$delete(this.modifyCstmrForm, 'account_balance') }
+      this.$delete(this.modifyCstmrForm, 'account_balance')
     }
   }
 }
