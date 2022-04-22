@@ -7,38 +7,41 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="客户类型" prop="userType">
-        <el-select v-model="ruleForm.userType" placeholder="请选择客户类型">
-          <el-option label="个人" value="Personal"></el-option>
-          <el-option label="机构" value="Organization"></el-option>
+      <el-form-item label="客户类型" prop="cstmr_type">
+        <el-select v-model="ruleForm.cstmr_type" placeholder="请选择客户类型">
+          <el-option label="个人" value="1"></el-option>
+          <el-option label="机构" value="2"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="客户姓名" prop="name">
-        <el-input v-model="ruleForm.name" placeholder="点击输入姓名"></el-input>
+      <el-form-item label="客户姓名" prop="cstmr_name">
+        <el-input
+          v-model="ruleForm.cstmr_name"
+          placeholder="点击输入姓名"
+        ></el-input>
       </el-form-item>
-      <el-form-item label="证件类型" prop="credentialsType">
+      <el-form-item label="证件类型" prop="document_type">
         <el-select
-          v-model="ruleForm.credentialsType"
+          v-model="ruleForm.document_type"
           placeholder="请选择证件类型"
         >
-          <el-option label="身份证" value="IdentityCard"></el-option>
-          <el-option label="护照" value="Passport"></el-option>
-          <el-option label="港澳台居住证" value="HMT"></el-option>
+          <el-option label="身份证" value="1"></el-option>
+          <el-option label="护照" value="2"></el-option>
+          <el-option label="港澳台居住证" value="3"></el-option>
           <el-option
             label="组织机构代码证"
-            value="OrganizationCode"
+            value="4"
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="证件号码" prop="credentialsNum">
+      <el-form-item label="证件号码" prop="document_num">
         <el-input
-          v-model="ruleForm.credentialsNum"
+          v-model="ruleForm.document_num"
           placeholder="点击输入证件号码"
         ></el-input>
       </el-form-item>
-      <el-form-item label="银行卡卡号" prop="cardId">
+      <el-form-item label="银行卡卡号" prop="card_id">
         <el-input
-          v-model="ruleForm.cardId"
+          v-model="ruleForm.card_id"
           placeholder="点击输入本人的银行卡号"
         ></el-input>
       </el-form-item>
@@ -60,24 +63,24 @@ export default {
   data () {
     return {
       ruleForm: {
-        name: '',
-        userType: '',
-        credentialsType: '',
-        credentialsNum: '',
-        cardId: ''
+        // name: '',
+        // userType: '',
+        // credentialsType: '',
+        // credentialsNum: '',
+        // cardId: ''
       },
       rules: {
-        name: [
+        cstmr_name: [
           { required: true, message: '请输入客户姓名', trigger: 'blur' },
           { min: 2, message: '长度至少2个字符', trigger: 'blur' }
         ],
-        userType: [
+        cstmr_type: [
           { required: true, message: '请选择客户类型', trigger: 'change' }
         ],
-        credentialsType: [
+        document_type: [
           { required: true, message: '请选择证件类型', trigger: 'change' }
         ],
-        credentialsNum: [
+        document_num: [
           { required: true, message: '请输入证件号', trigger: 'blur' },
           {
             min: 18,
@@ -86,7 +89,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        cardId: [
+        card_id: [
           { required: true, message: '请输入银行卡卡号添加', trigger: 'blur' }
         ]
       }
@@ -94,10 +97,23 @@ export default {
   },
   methods: {
     submitForm (formName) {
+      let vm = this
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
-          this.close()
+          let params = vm.formName
+          let url = '/api/user/register'
+          this.$axios
+            .get(url, { params })
+            .then((res) => {
+              console.log('请求成功')
+              alert('submit!')
+              this.close()
+              console.log(res)
+            })
+            .catch((error) => {
+              console.log('请求失败')
+              console.log(error)
+            })
         } else {
           console.log('error submit!!')
           return false
