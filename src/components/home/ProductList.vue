@@ -2,15 +2,20 @@
   <div id="Productlist" style="height: 100%; width: 100%">
     <el-card
       class="box-card"
-      style="height: calc(100% - 40px); height: calc(100% - 40px); margin: 20px; padding: 30px;"
-      shadow="hover"
+      style="
+        height: calc(100% - 40px);
+        height: calc(100% - 40px);
+        margin: 20px;
+        padding: 30px;
+      "
+      shadow="always"
     >
       <div>
         <el-row>
           <h1>产品列表</h1>
         </el-row>
         <el-row>
-          <el-col :span="10">
+          <el-col :span="22" style="text-align: left">
             <el-input
               placeholder="请输入内容"
               prefix-icon="el-icon-search"
@@ -84,7 +89,7 @@ export default {
     }
   },
   methods: {
-    headerStyle () {
+    headStyle () {
       return 'text-align:center'
     },
     innerStyle () {

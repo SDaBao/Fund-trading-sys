@@ -12,6 +12,7 @@ Vue.use(Global)
 // 设置反向代理，前端请求默认发送到 http://localhost:8443/api
 var axios = require('axios')
 // axios.defaults.baseURL = 'http://10.20.100.71:13333/'
+axios.defaults.baseURL = '/'
 // 全局注册，之后可在其他组件中通过 this.$axios 发送数据
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
@@ -108,6 +109,15 @@ Vue.use(VueRouter)
 //   var s = time.getSeconds()
 //   return y + '-' + timeAdd0(m) + '-' + timeAdd0(d) + ' ' + timeAdd0(h) + ':' + timeAdd0(mm) + ':' + timeAdd0(s)
 // })
+
+// 全局添加拦截器的作用是可以在每个api前面加上headers的token验证
+axios.interceptors.request.use(config => {
+  // 判断token是否存在和是否需要token验证的路由
+  if (sessionStorage.getItem('token')) {
+    config.headers.Authorization = sessionStorage.getItem('token')
+  }
+  return config
+})
 
 /* eslint-disable no-new */
 new Vue({
