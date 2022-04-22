@@ -7,8 +7,8 @@ import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
 import store from './store'
 import 'element-ui/lib/theme-chalk/index.css'
-// import Global from './Global'
-// Vue.use(Global)
+import Global from './Global'
+Vue.use(Global)
 // 设置反向代理，前端请求默认发送到 http://localhost:8443/api
 var axios = require('axios')
 // axios.defaults.baseURL = 'http://10.20.100.71:13333/'

@@ -135,6 +135,7 @@ export default {
         })
         .then((res) => {
           console.log(res.data.n)
+          this.$store.commit('setTable')
           for (var i = 0; i < res.data.n; ++i) {
             this.gettable(res.data.user_info[i])
           }
