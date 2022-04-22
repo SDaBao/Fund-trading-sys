@@ -71,30 +71,24 @@
         </el-form-item>
         <el-form-item label="持有份额" :label-width="formLabelWidth">
           <template>
-            <!-- <span>{{ scope.row.prdct_shares.toFixed(2) }}</span> -->
             <span>{{ prdct_shares }}</span>
           </template>
         </el-form-item>
         <el-form-item label="赎回份额" :inline="true" :label-width="formLabelWidth">
           <el-input placeholder="赎回份额(0.00)" v-model="redempVal">
-            <!-- <el-button slot="append" @click="dialogFormVisible = false">取 消</el-button> -->
             <el-button slot="append" type="primary" @click="fundRedemption()">赎 回</el-button>
           </el-input>
         </el-form-item>
+        <el-alert
+          center
+          :title="this.alTitle"
+          :type="this.alType"
+          :description="this.alDescription"
+          :visible.sync="alertVisible"
+          >
+        </el-alert>
       </el-form>
-      <!-- <div slot="footer" class="dialog-footer" :inline="true">
-        <p>赎回份额</p>
-        <el-input placeholder="赎回份额" v-model="input">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-        </el-input>
-      </div> -->
     </el-dialog>
-    <el-alert
-      title="错误提示的文案"
-      type="error"
-      show-icon>
-    </el-alert>
   </div>
 </template>
 
@@ -107,6 +101,10 @@ export default {
   data () {
     return {
       dialogFormVisible: false,
+      alertVisible: false,
+      alType: '',
+      alTitle: '',
+      alDescription: '',
       redempVal: '',
       fundList: [],
       prdct_id: '',
@@ -137,6 +135,12 @@ export default {
     rowStyle () {
       return 'text-align:center'
     },
+    alert (type, title, description) {
+      this.alertVisible = true
+      this.alType = type
+      this.alTitle = title
+      this.alDescription = description
+    },
     fundRedemptionForm (prdctId, prdctName, shares) {
       this.dialogFormVisible = true
       this.prdct_id = prdctId
@@ -144,18 +148,22 @@ export default {
       this.prdct_shares = shares
     },
     fundRedemption () {
-      let patten = /^(([1-9][0-9]{0,14})|([0]{1})|(([0]\\.\\d{1,2}|[1-9][0-9]{0,14}\\.\\d{1,2})))$/
-      if (typeof this.redempVal === 'undefined' || this.redempVal == null || this.redempVal > 0 || this.redempVal === '') {
+      let patten = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
+      console.log(this.redempVal)
+      if (typeof this.redempVal === 'undefined' || this.redempVal == null || this.redempVal < 0 || this.redempVal === '') {
         console.log('数额为空')
-        alert('数额为空')
+        this.alert('warning', '输入有误', '数额为空')
+        this.redempVal = ''
         return
-      } else if (patten.test(this.redempVal)) {
-        console.log('数额不符合正则规范')
-        alert('数额不符合正则规范')
+      } else if (!patten.test(this.redempVal)) {
+        console.log('数额不符合规范')
+        this.alert('warning', '输入有误', this.redempVal + ' 数额不符合规范')
+        this.redempVal = ''
         return
       } else if (this.redempVal > this.prdct_shares) {
         console.log('数额大于持有份额')
-        alert('数额大于持有份额')
+        this.alert('warning', '输入有误', '数额大于持有份额')
+        this.redempVal = ''
         return
       }
       this.$axios
@@ -169,10 +177,11 @@ export default {
         .then((res) => {
           console.log(this.redempVal)
           console.log(res.data)
+          this.alert('success', '申购成功', res.data)
+          // this.dialogFormVisible = false
         })
         .catch((failResponse) => {})
       this.redempVal = ''
-      this.dialogFormVisible = false
       this.getFundOwnList()
     }
   }
