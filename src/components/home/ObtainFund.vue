@@ -12,7 +12,7 @@
     >
       <div>
         <el-row>
-          <p style="font-size: 30px">持有产品</p>
+          <h1>持有产品</h1>
         </el-row>
         <el-row>
           <el-col>
@@ -58,7 +58,7 @@
       </div>
     </el-card>
     <el-dialog title="赎回" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
+      <el-form>
         <el-form-item label="产品ID" :label-width="formLabelWidth">
           <template>
             <span>{{ prdct_id }}</span>
@@ -187,3 +187,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.el-row {
+  margin-bottom: 20px;
+}
+</style>
