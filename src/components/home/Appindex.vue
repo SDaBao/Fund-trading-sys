@@ -85,19 +85,19 @@
             </el-menu-item-group>
             <el-divider style="margin: 10px"></el-divider>
             <el-menu-item-group title="运维">
-              <el-menu-item index="2-1" :disabled="!is_admin">
+              <el-menu-item index="2-1" :disabled="false" @click="isfirst = false">
                 <i class="el-icon-setting"></i>
                 <span slot="title">清算</span>
               </el-menu-item>
-              <el-menu-item index="2-2" :disabled="!is_admin">
+              <el-menu-item index="2-2" :disabled="false" @click="isfirst = false">
                 <i class="el-icon-setting"></i>
                 <span slot="title">回退</span>
               </el-menu-item>
-              <el-menu-item index="2-3" :disabled="!is_admin">
+              <el-menu-item index="/index/productManagement" :disabled="false" @click="isfirst = false">
                 <i class="el-icon-setting"></i>
                 <span slot="title">产品管理</span>
               </el-menu-item>
-              <el-menu-item index="2-4" :disabled="!is_admin">
+              <el-menu-item index="/index/businesslist" :disabled="false" @click="isfirst = false">
                 <i class="el-icon-setting"></i>
                 <span slot="title">订单查询</span>
               </el-menu-item>

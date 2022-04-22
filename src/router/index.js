@@ -9,6 +9,7 @@ import CustomerInformation from '@/components/home/CustomerInformation.vue'
 import ObtainFund from '@/components/home/ObtainFund.vue'
 import ProductList from '@/components/home/ProductList.vue'
 import BusinessList from '@/components/home/BusinessList.vue'
+import ProductManagement from '@/components/home/productManagement.vue'
 
 Vue.use(Router)
 
@@ -57,7 +58,7 @@ export default new Router({
           name: 'obtainfund',
           component: ObtainFund,
           meta: {
-            requireAuth: true
+            requireAuth: false
           }
         },
         {
@@ -65,13 +66,24 @@ export default new Router({
           name: 'productlist',
           component: ProductList,
           meta: {
-            requireAuth: true
+            requireAuth: false
           }
         },
         {
           path: 'businesslist',
           name: 'businesslist',
-          component: BusinessList
+          component: BusinessList,
+          meta: {
+            requireAuth: false
+          }
+        },
+        {
+          path: 'productManagement',
+          name: 'productManagement',
+          component: ProductManagement,
+          meta: {
+            requireAuth: false
+          }
         }
       ]
     },

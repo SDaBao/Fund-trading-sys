@@ -107,7 +107,6 @@ export default {
   },
   props: { isShow: String },
   created () {
-    // this.$store.commit('setTable')
     this.getlist()
     // this.tmpData = this.tableData
   },
@@ -135,6 +134,7 @@ export default {
         })
         .then((res) => {
           console.log(res.data.n)
+          this.$store.commit('setTable')
           for (var i = 0; i < res.data.n; ++i) {
             this.gettable(res.data.user_info[i])
           }
@@ -180,6 +180,7 @@ export default {
         .then((res) => {
           console.log(res.data.n)
           for (var i = 0; i < res.data.n; ++i) {
+            console.log('0')
             this.gettable(res.data.user_info[i])
           }
           console.log(this.$store.state.cstmrTable.tableData)
