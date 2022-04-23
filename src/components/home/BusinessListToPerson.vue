@@ -103,7 +103,7 @@
 
 <script>
 export default {
-  name: 'BusinessList',
+  name: 'BusinessListToPerson',
   created () {
     this.getBusinessList()
   },

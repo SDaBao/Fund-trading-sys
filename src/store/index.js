@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import user from './modules/user'
-import admin from './modules/admin'
+import operator from './modules/operator'
 import cstmrTable from './modules/cstmrTable'
 import card from './modules/card'
 
@@ -12,7 +12,7 @@ export default new Vuex.Store({
   strict: true,
   modules: {
     user,
-    admin,
+    operator,
     cstmrTable,
     card
   }

@@ -8,8 +8,9 @@ import CustomerSearch from '@/components/home/CustomerSearch.vue'
 import CustomerInformation from '@/components/home/CustomerInformation.vue'
 import ObtainFund from '@/components/home/ObtainFund.vue'
 import ProductList from '@/components/home/ProductList.vue'
-import BusinessList from '@/components/home/BusinessList.vue'
+import BusinessListToPerson from '@/components/home/BusinessListToPerson.vue'
 import ProductManagement from '@/components/home/productManagement.vue'
+import BusinessListToAll from '@/components/home/BusinessListToAll.vue'
 
 Vue.use(Router)
 const router = new Router({
@@ -24,64 +25,51 @@ const router = new Router({
       path: '/index',
       name: 'AppIndex',
       component: AppIndex,
-      meta: {
-        requireAuth: false
-      },
       children: [
         {
           path: 'fundmanagement',
           name: 'fundmanagement',
-          component: FundManagement,
-          meta: {
-            requireAuth: false
-          }
+          component: FundManagement
         },
         {
           path: 'customersearch',
           name: 'customersearch',
-          component: CustomerSearch,
-          meta: {
-            requireAuth: false
-          }
+          component: CustomerSearch
         },
         {
           path: 'customerinformation',
           name: 'customerinformation',
-          component: CustomerInformation,
-          meta: {
-            requireAuth: false
-          }
+          component: CustomerInformation
         },
         {
           path: 'obtainfund',
           name: 'obtainfund',
-          component: ObtainFund,
-          meta: {
-            requireAuth: false
-          }
+          component: ObtainFund
         },
         {
           path: 'productlist',
           name: 'productlist',
-          component: ProductList,
-          meta: {
-            requireAuth: false
-          }
+          component: ProductList
         },
         {
-          path: 'businesslist',
-          name: 'businesslist',
-          component: BusinessList,
-          meta: {
-            requireAuth: false
-          }
+          path: 'businesslisttoperson',
+          name: 'businesslisttoperson',
+          component: BusinessListToPerson
         },
         {
-          path: 'productManagement',
-          name: 'productManagement',
+          path: 'productmanagement',
+          name: 'productmanagement',
           component: ProductManagement,
           meta: {
-            requireAuth: false
+            requireAuth: true
+          }
+        },
+        {
+          path: 'businesslisttoall',
+          name: 'businesslisttoall',
+          component: BusinessListToAll,
+          meta: {
+            requireAuth: true
           }
         }
       ]
@@ -97,9 +85,10 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   // to 将要访问的路径  from 从哪个路径跳转过来  next 一个函数，表示放行
   if (to.path === '/' || to.path === '/login') return next()
-  // 获取token
-  const tokenStr = sessionStorage.getItem('token')
-  if (!tokenStr) return next('/login')
+  // 获取token+
+  const operatorToken = sessionStorage.getItem('token')
+  if (!operatorToken) return next('/login')
+  else if (operatorToken !== 'AdminToken' && to.meta.requireAuth) return next('login')
   next()
 })
 export default router

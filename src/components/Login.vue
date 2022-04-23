@@ -56,7 +56,13 @@ export default {
       //     }
       //   })
       //   .catch((failResponse) => {})
-      sessionStorage.setItem('token', 'ownedToken')
+      if (this.loginForm.username === 'admin') {
+        this.$store.commit('setAdmin', true)
+        sessionStorage.setItem('token', 'AdminToken')
+      } else {
+        this.$store.commit('setAdmin', false)
+        sessionStorage.setItem('token', 'notAdminToken')
+      }
       this.$router.replace({ path: '/index' })
     }
   }
