@@ -83,6 +83,7 @@
                         toCustomerInformation();
                         close();
                         userLogin(scope.row.name, scope.row.user_id);
+                        keepCstmrId(scope.row.name, scope.row.user_id)
                       "
                       >登入
                     </el-button>
@@ -207,6 +208,10 @@ export default {
     },
     toCustomerInformation () {
       this.$router.push({ path: '/index/customerinformation' })
+    },
+    keepCstmrId (cname, cid) {
+      sessionStorage.setItem('cstmr_name', cname)
+      sessionStorage.setItem('cstmr_id', cid)
     }
   }
 }

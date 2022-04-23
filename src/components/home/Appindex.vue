@@ -25,7 +25,7 @@
                 </div>
                 <!-- <el-button type="text" slot="reference">{{this.$store.getters.getUser.userName}}</el-button> -->
                 <el-button type="goon" slot="reference">{{
-                  this.$store.getters.getAdmin
+                  this.$store.getters.getOperatorName
                 }}</el-button>
               </el-popover>
             </li>
@@ -76,37 +76,58 @@
                     <i class="el-icon-s-marketing"></i>
                     <span slot="title">申购</span>
                   </el-menu-item>
-                  <el-menu-item index="/index/businesslist">
+                  <el-menu-item index="/index/businesslisttoperson">
                     <i class="el-icon-search"></i>
                     <span slot="title">订单查询</span>
                   </el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
             </el-menu-item-group>
-            <el-divider style="margin: 10px"></el-divider>
-            <el-menu-item-group title="运维">
-              <el-menu-item index="2-1" :disabled="false" @click="isfirst = false">
-                <i class="el-icon-setting"></i>
-                <span slot="title">清算</span>
-              </el-menu-item>
-              <el-menu-item index="2-2" :disabled="false" @click="isfirst = false">
-                <i class="el-icon-setting"></i>
-                <span slot="title">回退</span>
-              </el-menu-item>
-              <el-menu-item index="/index/productManagement" :disabled="false" @click="isfirst = false">
-                <i class="el-icon-setting"></i>
-                <span slot="title">产品管理</span>
-              </el-menu-item>
-              <el-menu-item index="/index/businesslist" :disabled="false" @click="isfirst = false">
-                <i class="el-icon-setting"></i>
-                <span slot="title">订单查询</span>
-              </el-menu-item>
-            </el-menu-item-group>
+            <div v-if="this.$store.state.operator.isAdmin">
+              <el-divider style="margin: 10px"></el-divider>
+              <el-menu-item-group title="运维">
+                <el-menu-item
+                  index="2-1"
+                  :disabled="false"
+                  @click="isfirst = false"
+                >
+                  <i class="el-icon-setting"></i>
+                  <span slot="title">清算</span>
+                </el-menu-item>
+                <el-menu-item
+                  index="2-2"
+                  :disabled="false"
+                  @click="isfirst = false"
+                >
+                  <i class="el-icon-setting"></i>
+                  <span slot="title">回退</span>
+                </el-menu-item>
+                <el-menu-item
+                  index="/index/productmanagement"
+                  :disabled="false"
+                  @click="isfirst = false"
+                >
+                  <i class="el-icon-setting"></i>
+                  <span slot="title">产品管理</span>
+                </el-menu-item>
+                <el-menu-item
+                  index="/index/businesslisttoall"
+                  :disabled="false"
+                  @click="isfirst = false"
+                >
+                  <i class="el-icon-setting"></i>
+                  <span slot="title">订单查询</span>
+                </el-menu-item>
+              </el-menu-item-group>
+            </div>
           </el-menu>
         </el-aside>
         <el-main style="overflow: hidden; padding: 0">
-          <customer-search v-if="isfirst" @close-page="closepage()"></customer-search>
-          <router-view />
+          <customer-search
+            v-if="isfirst"
+            @close-page="closepage()"
+          ></customer-search>
+            <router-view />
         </el-main>
       </el-container>
     </el-container>
@@ -130,10 +151,11 @@ export default {
   },
   created () {
     // 获取浏览器localStorage，判断用户是否已经登录
-    if (localStorage.getItem('admin')) {
-      // 如果已经登录，设置vuex登录状态
-      this.actUser(JSON.parse(localStorage.getItem('admin')))
-    }
+    // if (localStorage.getItem('admin')) {
+    //   // 如果已经登录，设置vuex登录状态
+    //   this.actUser(JSON.parse(localStorage.getItem('admin')))
+    // }
+    sessionStorage.setItem('detail', '')
   },
   computed: {
     ...mapGetters(['getUser', 'getShowLogin']),
@@ -145,7 +167,7 @@ export default {
     logout () {
       this.visible = false
       // 清空本地登录信息
-      localStorage.setItem('user', '')
+      sessionStorage.setItem('token', '')
       // 清空vuex登录信息
       // this.setAdmin('')
       // this.notifySucceed('成功退出登录')
@@ -162,6 +184,13 @@ export default {
     },
     closepage () {
       this.isfirst = false
+    },
+    isShowDetail () {
+      if (sessionStorage.getItem('cstmr_id')) {
+        this.isfirst = false
+        this.$store.commit('setUser', sessionStorage.getItem('cstmr_name'))
+        this.$store.commit('setUserID', sessionStorage.getItem('cstmr_id'))
+      }
     }
   }
 }
