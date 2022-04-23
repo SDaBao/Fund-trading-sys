@@ -30,35 +30,36 @@
               <el-table :data="BusinessData"
                         style="width: 100%"
                         :header-cell-style="headStyle"
-                        :cell-style="rowStyle">
+                        :cell-style="rowStyle"
+                        max-height="600px">
                 <el-table-column label="流水编号"
                                  width="150">
                   <template slot-scope="scope">
-                    <span>{{ scope.row.bsns_id }}</span>
+                    <span>{{ scope.row.deal_id }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="交易类型"
                                  width="150">
                   <template slot-scope="scope">
-                    <span>{{ scope.row.type }}</span>
+                    <span>{{ typeorm[scope.row.deal_type] }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="客户名称"
+                <el-table-column label="交易状态"
                                  width="150">
                   <template slot-scope="scope">
-                    <span>{{ scope.row.name }}</span>
+                    <span>{{ dealorm[scope.row.deal_status] }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="产品代号"
                                  width="150">
                   <template slot-scope="scope">
-                    <span>{{ scope.row.pro_id }}</span>
+                    <span>{{ scope.row.prdct_id }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="产品名称"
                                  width="150">
                   <template slot-scope="scope">
-                    <span>{{ scope.row.pro_name }}</span>
+                    <span>{{ scope.row.prdct_name }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="下单时间"
@@ -70,26 +71,28 @@
                 <el-table-column label="确认时间"
                                  width="150">
                   <template slot-scope="scope">
-                    <span>{{ scope.row.acc_time }}</span>
+                    <span>{{ scope.row.ac_time }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="金额"
                                  width="150">
                   <template slot-scope="scope">
-                    <span>{{ scope.row.money }}</span>
+                    <span>{{ scope.row.trans_val }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="份额"
                                  width="150">
                   <template slot-scope="scope">
-                    <span>{{ scope.row.shares }}</span>
+                    <span>{{ scope.row.trans_share }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="操作"
-                                 min-width="200px">
-                  <template>
+                                 min-width="100px"
+                                 fixed="right">
+                  <template slot-scope="scope">
                     <el-button size="mini"
-                               @click="dialogFormVisible=true ">取消</el-button>
+                               @click="businessCancelForm(scope.row.deal_id)"
+                               :disabled="scope.row.deal_status!=0">取消</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -98,36 +101,50 @@
         </el-row>
       </div>
     </el-card>
+    <el-dialog title="你确定要取消这笔交易吗，这是一项不可逆的操作"
+               :visible.sync="dialogFormVisible">
+      <el-form>
+        <el-form-item>
+          <el-button type="primary"
+                     @click="calcelDeal()">确认</el-button>
+          <el-button>取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+
+import { DEAL_STATUS_ORM, DEAL_TYPE_ORM } from '../../constant'
+
 export default {
-  name: 'BusinessListToPerson',
-  inject: ['setLocation'],
+  name: 'BusinessList',
   created () {
     this.getBusinessList()
-    this.setLocation()
   },
   data () {
+    this.dealorm = DEAL_STATUS_ORM
+    this.typeorm = DEAL_TYPE_ORM
     return {
       input: '',
-      BusinessData: [
-        {
-          dialogFormVisible: false,
-          deal_id: '',
-          cstmr_id: '',
-          prdct_id: '',
-          deal_type: '',
-          deal_status: '',
-          deal_time: '',
-          ac_time: '',
-          trans_val: '',
-          trans_share: '',
-          status: ''
-        }
-      ],
-      tmpData: []
+      dialogFormVisible: false,
+      BusinessData: [],
+      deal_id: '',
+      cstmr_id: '',
+      prdct_id: '',
+      prdct_name: '',
+      deal_type: '',
+      deal_status: '',
+      deal_time: '',
+      ac_time: '',
+      trans_val: '',
+      trans_share: '',
+      tmpData: [],
+      alertVisible: false,
+      alType: '',
+      alTitle: '',
+      alDescription: ''
     }
   },
   methods: {
@@ -136,6 +153,12 @@ export default {
     },
     rowStyle () {
       return 'text-align:center'
+    },
+    alert (type, title, description) {
+      this.alertVisible = true
+      this.alType = type
+      this.alTitle = title
+      this.alDescription = description
     },
     SearchInput () {
       this.tmpData = this.BusinessData.filter(
@@ -157,6 +180,22 @@ export default {
           console.log(res.data)
           this.BusinessData = res.data.trade_info
         })
+    },
+    calcelDeal () {
+      this.$axios
+        .get('./api/trade/cancel', {
+          params: {
+            deal_id: this.deal_id
+          }
+        })
+        .then((res) => {
+          console.log(res.data)
+          this.alert('success', '成功', res.data)
+        })
+    },
+    businessCancelForm (DealId) {
+      this.dialogFormVisible = true
+      this.deal_id = DealId
     }
   }
 }
