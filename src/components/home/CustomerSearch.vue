@@ -41,9 +41,6 @@
               ></createCustomerInformation>
             </el-dialog>
           </el-col>
-          <!-- <el-col :span="4">
-            <el-button @click="gettable()">get</el-button>
-          </el-col> -->
         </el-row>
         <el-row>
           <el-col :span="24">
@@ -83,7 +80,7 @@
                         toCustomerInformation();
                         close();
                         userLogin(scope.row.name, scope.row.user_id);
-                        keepCstmrId(scope.row.name, scope.row.user_id)
+                        keepCstmrInfo(scope.row.name, scope.row.user_id)
                       "
                       >登入
                     </el-button>
@@ -106,10 +103,11 @@ export default {
   components: {
     createCustomerInformation
   },
+  inject: ['setLocation'],
   props: { isShow: String },
   created () {
     this.getlist()
-    // this.tmpData = this.tableData
+    this.setLocation()
   },
   data () {
     return {
@@ -143,9 +141,6 @@ export default {
         .catch((failResponse) => {})
     },
     gettable (myObj) {
-      // console.log(this.$store.state.user)
-      // console.log(this.$store.state.user.tableData)
-      // console.log(this.myObj.name)
       this.$store.commit('setcstmrTable', {
         key0: 'user_id',
         user_id: myObj.cstmr_id,
@@ -158,18 +153,11 @@ export default {
         key4: 'card_id',
         card_id: myObj.document_num
       })
-      // console.log(this.$store.state.user.tableData)
     },
     submitForm () {
       this.dialogFormVisible = true
     },
     SearchInput () {
-      // this.tmpData = this.tableData.filter(
-      //   (data) =>
-      //     !this.input ||
-      //     data.name.toLowerCase().includes(this.input.toLowerCase()) ||
-      //     data.card_id.toLowerCase().includes(this.input.toLowerCase())
-      // )
       this.$axios
         .get('/api/user/search', {
           params: {
@@ -207,11 +195,15 @@ export default {
       this.$emit('close-page')
     },
     toCustomerInformation () {
-      this.$router.push({ path: '/index/customerinformation' })
+      this.$router.push({ path: '/customerinformation' })
     },
-    keepCstmrId (cname, cid) {
+    keepCstmrInfo (cname, cid) {
       sessionStorage.setItem('cstmr_name', cname)
       sessionStorage.setItem('cstmr_id', cid)
+    },
+    setLocation () {
+      const activeMenu = this.$route.path
+      sessionStorage.setItem('location', activeMenu)
     }
   }
 }

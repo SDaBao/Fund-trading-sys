@@ -125,7 +125,10 @@ import { CSTMR_TYPE_ORM, DOCUMENT_TYPE_ORM } from '../../constant'
 
 export default {
   name: 'CustomerInformation',
+  inject: ['setLocation'],
   created () {
+    this.cstmrID = sessionStorage.getItem('cstmr_id')
+    this.setLocation()
     this.getUserInfo()
   },
   data () {
@@ -133,6 +136,7 @@ export default {
     this.documentTypeOrm = DOCUMENT_TYPE_ORM
     return {
       dialogFormVisible: false,
+      cstmrID: '',
       modifyCstmrForm: {
         account_balance: Number
       },
@@ -167,7 +171,7 @@ export default {
       this.$axios
         .get('/api/user/info', {
           params: {
-            cstmr_id: this.$store.state.user.user_id
+            cstmr_id: this.cstmrID
           }
         })
         .then((res) => {
@@ -179,7 +183,7 @@ export default {
     submitForm () {
       // let vm = this
       let params = this.modifyCstmrForm
-      let url = '/api/user/update' // 暂时没有修改客户信息的接口，所以这里执行无效
+      let url = '/api/user/update'
       console.log(this.modifyCstmrForm)
       this.$axios
         .get(url, { params })

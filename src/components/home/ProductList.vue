@@ -94,18 +94,15 @@
       <el-form>
         <el-form-item label="产品风险" :label-width="formLabelWidth">
           <template>
+            <!-- <el-badge is-dot class="mark" :type="riskWarning(productRisk)">
+            </el-badge> -->
             <el-tag size='large' :type="riskWarning(productRisk)">
               {{ riskRatingOrm[productRisk] }}
             </el-tag>
           </template>
         </el-form-item>
-        <el-form-item label="账户余额" :label-width="formLabelWidth">
-          <template>
-            <span>{{ accountBalance.toFixed(2) }}</span>
-          </template>
-        </el-form-item>
-        <el-form-item label="申购金额" :inline="true" :label-width="formLabelWidth">
-          <el-input placeholder="申购金额(0.01)" style="width: 250px" v-model="tradeVal">
+        <el-form-item label="申购份额" :inline="true" :label-width="formLabelWidth">
+          <el-input placeholder="申购份额(0.01)" style="width: 250px" v-model="tradeVal">
             <el-button slot="append" type="primary" :loading="tradeLoding" @click="fundTrade()">申 购</el-button>
           </el-input>
         </el-form-item>
@@ -157,7 +154,9 @@ import { RISK_RATING_ORM, SALE_CONDITION_ORM } from '../../constant'
 
 export default {
   name: 'ProductList',
+  inject: ['setLocation'],
   created () {
+    this.setLocation()
     this.getProductData()
   },
   data () {
@@ -172,7 +171,6 @@ export default {
       tradeLoding: false,
       alertVisible: false,
       userRisk: this.$store.state.user.user_info[0].risk_rating,
-      accountBalance: this.$store.state.user.user_info[0].account_balance,
       alType: '',
       alTitle: '',
       alDescription: '',
@@ -254,8 +252,6 @@ export default {
         this.tradeLoding = false
         return
       }
-      const temp = this.accountBalance - Number(this.tradeVal)
-      console.log(temp)
       this.$axios
         .get('/api/trade/buy', {
           params: {
@@ -265,19 +261,16 @@ export default {
           }
         })
         .then((res) => {
+          console.log(this.tradeVal)
           console.log(res.data)
           this.tradeLoding = false
-          if (res.data === 'value false') {
-            this.alert('error', '交易失败', '账户余额不足，请充值！')
-            return
-          } else if (res.data === 'false') {
-            this.alert('error', '交易失败', '系统错误')
+          if (res.data === '账户余额不足，请充值') {
+            this.alert('error', '交易失败', res.data)
+            this.tradeVal = ''
+            this.tradeLoding = false
             return
           }
           this.alert('success', '申购成功', res.data)
-          this.accountBalance = temp
-          this.$store.commit('setAccountBalance', temp)
-          this.tradeVal = ''
           // this.dialogFormVisible = false
         })
         .catch((failResponse) => {

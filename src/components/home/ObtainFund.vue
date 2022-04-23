@@ -96,8 +96,10 @@
 <script>
 export default {
   name: 'ObtainFund',
+  inject: ['setLocation'],
   created () {
     this.getFundOwnList()
+    this.setLocation()
   },
   data () {
     return {

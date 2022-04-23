@@ -63,7 +63,7 @@ export default {
         this.$store.commit('setAdmin', false)
         sessionStorage.setItem('token', 'notAdminToken')
       }
-      this.$router.replace({ path: '/index' })
+      this.$router.replace({ path: '/' })
     }
   }
 }

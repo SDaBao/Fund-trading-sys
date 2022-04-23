@@ -6,25 +6,18 @@
 
 <script>
 export default {
-  name: 'App'
-  // provide () {
-  //   return {
-  //     reload: this.reload
-  //   }
-  // },
-  // data () {
-  //   return {
-  //     isRouterAlive: true
-  //   }
-  // },
-  // methods: {
-  //   reload () {
-  //     this.isRouterAlive = false
-  //     this.$nextTick(function () {
-  //       this.isRouterAlive = true
-  //     })
-  //   }
-  // }
+  name: 'App',
+  provide () {
+    return {
+      setLocation: this.setLocation
+    }
+  },
+  methods: {
+    setLocation () {
+      const activeMenu = this.$route.path
+      sessionStorage.setItem('location', activeMenu)
+    }
+  }
 }
 </script>
 

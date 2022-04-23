@@ -13,17 +13,20 @@ import ProductManagement from '@/components/home/productManagement.vue'
 import BusinessListToAll from '@/components/home/BusinessListToAll.vue'
 
 Vue.use(Router)
+
+const originalPush = Router.prototype.push
+// 修改 原型对象中的push方法
+Router.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
 const router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/',
-      name: 'Login',
-      component: Login
-    },
-    {
-      path: '/index',
       name: 'AppIndex',
+      redirect: '/customersearch',
       component: AppIndex,
       children: [
         {
@@ -84,11 +87,11 @@ const router = new Router({
 // 挂载路由导航守卫
 router.beforeEach((to, from, next) => {
   // to 将要访问的路径  from 从哪个路径跳转过来  next 一个函数，表示放行
-  if (to.path === '/' || to.path === '/login') return next()
+  if (to.path === '/login') return next()
   // 获取token+
   const operatorToken = sessionStorage.getItem('token')
   if (!operatorToken) return next('/login')
-  else if (operatorToken !== 'AdminToken' && to.meta.requireAuth) return next('login')
+  else if (operatorToken !== 'AdminToken' && to.meta.requireAuth) return next('/login')
   next()
 })
 export default router
