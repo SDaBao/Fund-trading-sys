@@ -47,7 +47,7 @@
                         fundRedemptionForm(scope.row.prdct_id, scope.row.prdct_name, scope.row.prdct_shares)
                       "
                     >
-                      赎回
+                      赎 回
                     </el-button>
                   </template>
                 </el-table-column>
@@ -72,7 +72,7 @@
         </el-form-item>
         <el-form-item label="持有份额" :label-width="formLabelWidth">
           <template>
-            <span>{{ prdct_shares.toFixed(2) }}</span>
+            <span>{{ Number(prdct_shares).toFixed(2) }}</span>
           </template>
         </el-form-item>
         <el-form-item label="赎回份额" :inline="true" :label-width="formLabelWidth">
