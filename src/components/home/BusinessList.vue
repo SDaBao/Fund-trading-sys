@@ -85,7 +85,13 @@
                     <span>{{ scope.row.shares }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column></el-table-column>
+                <el-table-column label="操作"
+                                 min-width="200px">
+                  <template>
+                    <el-button size="mini"
+                               @click="dialogFormVisible=true ">取消</el-button>
+                  </template>
+                </el-table-column>
               </el-table>
             </template>
           </el-col>
@@ -99,22 +105,24 @@
 export default {
   name: 'BusinessList',
   created () {
-    this.tmpData = this.BusinessData
+    this.getBusinessList()
   },
   data () {
     return {
       input: '',
       BusinessData: [
         {
-          bsns_id: '1',
-          type: '1',
-          name: 'GuWei',
-          pro_id: '1',
-          pro_name: 'hsdz',
-          deal_time: '11.43',
-          acc_time: '11.43',
-          money: '100',
-          shares: '99'
+          dialogFormVisible: false,
+          deal_id: '',
+          cstmr_id: '',
+          prdct_id: '',
+          deal_type: '',
+          deal_status: '',
+          deal_time: '',
+          ac_time: '',
+          trans_val: '',
+          trans_share: '',
+          status: ''
         }
       ],
       tmpData: []
@@ -134,6 +142,19 @@ export default {
           data.name.toLowerCase().includes(this.input.toLowerCase()) ||
           data.pro_name.toLowerCase().includes(this.input.toLowerCase())
       )
+    },
+    getBusinessList () {
+      console.log(this.$store.state.user.user_id)
+      this.$axios
+        .get('./api/trade/history', {
+          params: {
+            cstmr_id: this.$store.state.user.user_id
+          }
+        })
+        .then((res) => {
+          console.log(res.data)
+          this.BusinessData = res.data.trade_info
+        })
     }
   }
 }
