@@ -14,8 +14,25 @@
             <p style="font-size: 30px">资金信息</p>
           </el-col>
           <el-col :span="6">
-            <el-button size="medium"> 银行卡绑定 </el-button>
-            <el-button size="medium"> 充值 </el-button>
+            <el-button size="medium" @click="FormVisible=true"> 银行卡绑定 </el-button>
+            <el-dialog title="银行卡绑定"
+                       :visible.sync="FormVisible"
+                       center
+                       :append-to-body="true"
+                       :lock-scroll="false"
+                       width="30%">
+              <attachcard :isShow1="'true'"
+                          @close-form1="closeform1()"></attachcard>
+            </el-dialog>
+            <el-button size="medium" @click="Visible=true"> 充值 </el-button>
+            <el-dialog title="充值"
+                       :visible.sync="Visible"
+                       center
+                       :append-to-body="true"
+                       :lock-scroll="false"
+                       width="30%">
+              <deposittocard :isShow="'true'" @close-form="closeform()"></deposittocard>
+            </el-dialog>
           </el-col>
         </el-row>
         <el-row>
@@ -53,8 +70,15 @@
 </template>
 
 <script>
+import attachcard from './AttachCard'
+import deposittocard from './depositToCard'
+
 export default {
   name: 'FundManagement',
+  components: {
+    attachcard,
+    deposittocard
+  },
   inject: ['setLocation'],
   created () {
     this.$store.commit('setUserID', sessionStorage.getItem('cstmr_id'))
@@ -63,7 +87,9 @@ export default {
   },
   data () {
     return {
-      cstmrName: sessionStorage.getItem('cstmr_name')
+      cstmrName: sessionStorage.getItem('cstmr_name'),
+      FormVisible: false,
+      Visible: false
     }
   },
   methods: {
@@ -87,6 +113,12 @@ export default {
     },
     rowStyle () {
       return 'text-align:center'
+    },
+    closeform () {
+      this.Visible = false
+    },
+    closeform1 () {
+      this.FormVisible = false
     }
   }
 }
