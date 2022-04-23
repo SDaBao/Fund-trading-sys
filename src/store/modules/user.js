@@ -36,6 +36,9 @@ export default {
       state.user_info.push(data)
       console.log(state.user_info)
     },
+    setAccountBalance (state, data) {
+      state.user_info[0].account_balance = data
+    },
     cleanUserInfo (state) {
       state.user_info = []
       console.log(state.user_info)

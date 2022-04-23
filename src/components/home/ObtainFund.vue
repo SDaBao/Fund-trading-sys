@@ -184,6 +184,14 @@ export default {
           console.log(this.redempVal)
           console.log(res.data)
           this.tradeLoding = false
+          this.tradeVal = ''
+          if (res.data === 'value false') {
+            this.alert('error', '交易失败', '持有份额不足，请重试！')
+            return
+          } else if (res.data === 'false') {
+            this.alert('error', '交易失败', '系统错误')
+            return
+          }
           this.alert('success', '赎回成功', res.data)
           // this.dialogFormVisible = false
         })
