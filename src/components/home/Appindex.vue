@@ -48,35 +48,34 @@
           >
             <el-menu-item-group title="柜台">
               <el-menu-item
-                index="/index/customersearch"
-                @click="isfirst = false"
+                index="/customersearch"
               >
                 <i class="el-icon-s-custom"></i>
                 <span slot="title">客户检索</span>
               </el-menu-item>
               <el-submenu index="1" v-if="getShowLogin">
-                <template slot="title" @click="isfirst = false">
+                <template slot="title" >
                   <i class="el-icon-location"></i>
                   <span>{{ this.$store.getters.getUser }}</span>
                 </template>
                 <el-menu-item-group>
-                  <el-menu-item index="/index/customerinformation">
+                  <el-menu-item index="/customerinformation">
                     <i class="el-icon-info"></i>
                     <span slot="title">客户信息</span>
                   </el-menu-item>
-                  <el-menu-item index="/index/fundmanagement">
+                  <el-menu-item index="/fundmanagement">
                     <i class="el-icon-s-finance"></i>
                     <span slot="title">资金管理</span>
                   </el-menu-item>
-                  <el-menu-item index="/index/obtainfund">
+                  <el-menu-item index="/obtainfund">
                     <i class="el-icon-star-on"></i>
                     <span slot="title">持仓</span>
                   </el-menu-item>
-                  <el-menu-item index="/index/productlist">
+                  <el-menu-item index="/productlist">
                     <i class="el-icon-s-marketing"></i>
                     <span slot="title">申购</span>
                   </el-menu-item>
-                  <el-menu-item index="/index/businesslisttoperson">
+                  <el-menu-item index="/businesslisttoperson">
                     <i class="el-icon-search"></i>
                     <span slot="title">订单查询</span>
                   </el-menu-item>
@@ -89,7 +88,6 @@
                 <el-menu-item
                   index="2-1"
                   :disabled="false"
-                  @click="isfirst = false"
                 >
                   <i class="el-icon-setting"></i>
                   <span slot="title">清算</span>
@@ -97,23 +95,20 @@
                 <el-menu-item
                   index="2-2"
                   :disabled="false"
-                  @click="isfirst = false"
                 >
                   <i class="el-icon-setting"></i>
                   <span slot="title">回退</span>
                 </el-menu-item>
                 <el-menu-item
-                  index="/index/productmanagement"
+                  index="/productmanagement"
                   :disabled="false"
-                  @click="isfirst = false"
                 >
                   <i class="el-icon-setting"></i>
                   <span slot="title">产品管理</span>
                 </el-menu-item>
                 <el-menu-item
-                  index="/index/businesslisttoall"
+                  index="/businesslisttoall"
                   :disabled="false"
-                  @click="isfirst = false"
                 >
                   <i class="el-icon-setting"></i>
                   <span slot="title">订单查询</span>
@@ -123,10 +118,6 @@
           </el-menu>
         </el-aside>
         <el-main style="overflow: hidden; padding: 0">
-          <customer-search
-            v-if="isfirst"
-            @close-page="closepage()"
-          ></customer-search>
             <router-view />
         </el-main>
       </el-container>
@@ -145,17 +136,22 @@ export default {
   data () {
     return {
       is_admin: false,
-      visible: false,
-      isfirst: true
+      visible: false
     }
   },
   created () {
     // 获取浏览器localStorage，判断用户是否已经登录
-    // if (localStorage.getItem('admin')) {
-    //   // 如果已经登录，设置vuex登录状态
-    //   this.actUser(JSON.parse(localStorage.getItem('admin')))
-    // }
-    sessionStorage.setItem('detail', '')
+    if (sessionStorage.getItem('cstmr_name')) {
+      // 如果已经登录，设置vuex登录状态
+      const cname = sessionStorage.getItem('cstmr_name')
+      const cid = sessionStorage.getItem('cstmr_id')
+      const tolocation = sessionStorage.getItem('location')
+      this.$store.commit('setUser', cname)
+      this.$store.commit('setUserID', cid)
+      this.$store.commit('setShowLogin', true)
+      console.log(tolocation)
+      this.$router.push(tolocation)
+    }
   },
   computed: {
     ...mapGetters(['getUser', 'getShowLogin']),
@@ -166,11 +162,7 @@ export default {
   methods: {
     logout () {
       this.visible = false
-      // 清空本地登录信息
       sessionStorage.setItem('token', '')
-      // 清空vuex登录信息
-      // this.setAdmin('')
-      // this.notifySucceed('成功退出登录')
       this.$router.push({ path: '/login' })
     },
     handleOpen (key, keyPath) {
@@ -182,12 +174,8 @@ export default {
     handleSelect (key, keyPath) {
       console.log(key, keyPath)
     },
-    closepage () {
-      this.isfirst = false
-    },
     isShowDetail () {
       if (sessionStorage.getItem('cstmr_id')) {
-        this.isfirst = false
         this.$store.commit('setUser', sessionStorage.getItem('cstmr_name'))
         this.$store.commit('setUserID', sessionStorage.getItem('cstmr_id'))
       }

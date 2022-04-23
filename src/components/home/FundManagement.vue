@@ -19,18 +19,18 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-descriptions class="margin-top" :column="2" :size="size" border>
+          <el-descriptions class="margin-top" :column="2" border>
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-user"></i>
                 客户名称
               </template>
-              {{ this.$store.state.user.user_info[0].cstmr_name }}
+              {{ this.cstmrName }}
             </el-descriptions-item>
           </el-descriptions>
         </el-row>
         <el-row v-for="(item, i) in this.$store.state.card.card_info" :key="i">
-          <el-descriptions class="margin-top" :column="2" :size="size" border>
+          <el-descriptions class="margin-top" :column="2" border>
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-mobile-phone"></i>
@@ -55,12 +55,15 @@
 <script>
 export default {
   name: 'FundManagement',
+  inject: ['setLocation'],
   created () {
+    this.$store.commit('setUserID', sessionStorage.getItem('cstmr_id'))
     this.getCardInfo()
+    this.setLocation()
   },
   data () {
     return {
-      size: 'medium'
+      cstmrName: sessionStorage.getItem('cstmr_name')
     }
   },
   methods: {
@@ -72,13 +75,10 @@ export default {
           }
         })
         .then((res) => {
-          // console.log(res.data.card_info.length)
-          // console.log(res.data.card_info[0])
           this.$store.commit('cleanCardInfo')
           this.$store.commit('setCardInfo', res.data.card_info)
           this.$store.commit('setAccountB', res.data.account_balance)
           this.$store.commit('setCardNum', res.data.n)
-          // console.log(this.$store.state.card.card_info)
         })
         .catch((failResponse) => {})
     },

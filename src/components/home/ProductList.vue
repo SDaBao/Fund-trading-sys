@@ -78,8 +78,10 @@
 <script>
 export default {
   name: 'ProductList',
+  inject: ['setLocation'],
   created () {
     this.ProductData = this.productData
+    this.setLocation()
   },
   data () {
     return {

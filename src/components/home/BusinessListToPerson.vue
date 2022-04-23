@@ -104,8 +104,10 @@
 <script>
 export default {
   name: 'BusinessListToPerson',
+  inject: ['setLocation'],
   created () {
     this.getBusinessList()
+    this.setLocation()
   },
   data () {
     return {

@@ -3,7 +3,17 @@ export default {
     user: '', // 登录的用户
     user_id: '',
     showLogin: false, // 用于控制是否显示登录组件
-    user_info: []
+    user_info: [
+      {
+        cstmr_id: String,
+        cstmr_type: String,
+        cstmr_name: String,
+        document_type: Number,
+        document_num: String,
+        risk_rating: Number,
+        account_balance: Number
+      }
+    ]
   },
   getters: {
     getUser (state) {
