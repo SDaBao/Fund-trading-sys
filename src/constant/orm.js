@@ -13,3 +13,8 @@ export const RISK_RATING_ORM = {
   1: '中',
   2: '高'
 }
+
+export const SALE_CONDITION_ORM = {
+  true: '公开销售',
+  false: '暂停销售'
+}

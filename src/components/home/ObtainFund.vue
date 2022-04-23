@@ -57,6 +57,7 @@
         </el-row>
       </div>
     </el-card>
+    <!-- 赎回对话框 -->
     <el-dialog title="赎回" :visible.sync="dialogFormVisible">
       <el-form>
         <el-form-item label="产品ID" :label-width="formLabelWidth">
@@ -75,8 +76,8 @@
           </template>
         </el-form-item>
         <el-form-item label="赎回份额" :inline="true" :label-width="formLabelWidth">
-          <el-input placeholder="赎回份额(0.00)" v-model="redempVal">
-            <el-button slot="append" type="primary" @click="fundRedemption()">赎 回</el-button>
+          <el-input placeholder="赎回份额(0.01)" v-model="redempVal">
+            <el-button slot="append" type="primary" :loading="tradeLoding" @click="fundRedemption()">赎 回</el-button>
           </el-input>
         </el-form-item>
         <el-alert
@@ -110,7 +111,8 @@ export default {
       prdct_id: '',
       prdct_name: '',
       prdct_shares: '',
-      formLabelWidth: '100px'
+      formLabelWidth: '100px',
+      tradeLoding: false
     }
   },
   methods: {
@@ -148,22 +150,26 @@ export default {
       this.prdct_shares = shares
     },
     fundRedemption () {
+      this.tradeLoding = true
       let patten = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
       console.log(this.redempVal)
-      if (typeof this.redempVal === 'undefined' || this.redempVal == null || this.redempVal < 0 || this.redempVal === '') {
+      if (typeof this.redempVal === 'undefined' || this.redempVal == null || this.redempVal <= 0 || this.redempVal === '') {
         console.log('数额为空')
         this.alert('warning', '输入有误', '数额为空')
         this.redempVal = ''
+        this.tradeLoding = false
         return
       } else if (!patten.test(this.redempVal)) {
         console.log('数额不符合规范')
         this.alert('warning', '输入有误', this.redempVal + ' 数额不符合规范')
         this.redempVal = ''
+        this.tradeLoding = false
         return
       } else if (this.redempVal > this.prdct_shares) {
         console.log('数额大于持有份额')
         this.alert('warning', '输入有误', '数额大于持有份额')
         this.redempVal = ''
+        this.tradeLoding = false
         return
       }
       this.$axios
@@ -177,11 +183,18 @@ export default {
         .then((res) => {
           console.log(this.redempVal)
           console.log(res.data)
-          this.alert('success', '申购成功', res.data)
+          this.tradeLoding = false
+          this.alert('success', '赎回成功', res.data)
           // this.dialogFormVisible = false
         })
-        .catch((failResponse) => {})
+        .catch((failResponse) => {
+          console.log('交易失败')
+          this.alert('error', '交易失败', failResponse)
+          this.tradeVal = ''
+          this.tradeLoding = false
+        })
       this.redempVal = ''
+      this.tradeLoding = false
       this.getFundOwnList()
     }
   }
