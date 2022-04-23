@@ -72,7 +72,7 @@
         </el-form-item>
         <el-form-item label="持有份额" :label-width="formLabelWidth">
           <template>
-            <span>{{ prdct_shares }}</span>
+            <span>{{ prdct_shares.toFixed(2) }}</span>
           </template>
         </el-form-item>
         <el-form-item label="赎回份额" :inline="true" :label-width="formLabelWidth">
@@ -172,6 +172,7 @@ export default {
         this.tradeLoding = false
         return
       }
+      const temp = this.prdct_shares - this.redempVal
       this.$axios
         .get('/api/trade/sale', {
           params: {
@@ -181,8 +182,8 @@ export default {
           }
         })
         .then((res) => {
-          console.log(this.redempVal)
           console.log(res.data)
+          console.log(temp)
           this.tradeLoding = false
           this.tradeVal = ''
           if (res.data === 'value false') {
@@ -193,6 +194,7 @@ export default {
             return
           }
           this.alert('success', '赎回成功', res.data)
+          this.prdct_shares = temp
           // this.dialogFormVisible = false
         })
         .catch((failResponse) => {
