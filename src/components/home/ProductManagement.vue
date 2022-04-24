@@ -18,6 +18,7 @@
           <el-input placeholder="请输入内容"
                     prefix-icon="el-icon-search"
                     v-model="searchInput"
+                    @input="searchProductData()"
                     style="width: 600px">
           </el-input>
         </el-col>
@@ -139,7 +140,8 @@
                   <el-form-item label="基金编号"
                                 prop="prdct_id">
                     <el-input placeholder="请输入新的产品编号"
-                              v-model="product.prdct_id">
+                              v-model="product.prdct_id"
+                              :disabled="true">
                     </el-input>
                   </el-form-item>
                   <el-form-item label="基金名称"
@@ -264,6 +266,22 @@ export default {
           console.log(this.productData)
         })
         .catch((failResponse) => { })
+    },
+    searchProductData () {
+      console.log(this.searchInput)
+      this.$axios
+        .get('/api/fund/search', {
+          params: {
+            keyWord: this.searchInput,
+            search_type: this.searchType
+          }
+        })
+        .then((res) => {
+          console.log(res.data)
+          this.productData = res.data.product_info
+          console.log(this.productData)
+        })
+        .catch((failResponse) => { alert('search ERR!') })
     },
     productUpdate () {
       let params = this.product

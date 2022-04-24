@@ -20,7 +20,7 @@
                       prefix-icon="el-icon-search"
                       v-model="input"
                       style="width: 400px"
-                      @input="SearchInput">
+                      @input="SearchInput()">
             </el-input>
           </el-col>
         </el-row>
@@ -169,12 +169,17 @@ export default {
       this.alDescription = description
     },
     SearchInput () {
-      this.tmpData = this.BusinessData.filter(
-        data =>
-          !this.input ||
-          data.name.toLowerCase().includes(this.input.toLowerCase()) ||
-          data.pro_name.toLowerCase().includes(this.input.toLowerCase())
-      )
+      this.$axios
+        .get('/api/trade/search', {
+          params: {
+            keyword: this.input
+          }
+        })
+        .then((res) => {
+          console.log(res.data)
+          this.BusinessData = res.data.trade_info
+        })
+        .catch((failResponse) => {})
     },
     getBusinessList () {
       console.log(sessionStorage.getItem('cstmr_id'))
