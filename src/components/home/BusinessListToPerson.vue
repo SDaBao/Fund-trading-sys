@@ -107,8 +107,16 @@
         <el-form-item>
           <el-button type="primary"
                      @click="calcelDeal()">确认</el-button>
-          <el-button>取消</el-button>
+          <el-button @click="
+                      dialogFormVisible = false;
+                    ">取 消</el-button>
         </el-form-item>
+        <el-alert center
+                  :title="this.alTitle"
+                  :type="this.alType"
+                  :description="this.alDescription"
+                  :visible.sync="alertVisible">
+        </el-alert>
       </el-form>
     </el-dialog>
   </div>
@@ -169,11 +177,11 @@ export default {
       )
     },
     getBusinessList () {
-      console.log(this.$store.state.user.user_id)
+      console.log(sessionStorage.getItem('cstmr_id'))
       this.$axios
         .get('./api/trade/history', {
           params: {
-            cstmr_id: this.$store.state.user.user_id
+            cstmr_id: sessionStorage.getItem('cstmr_id')
           }
         })
         .then((res) => {
