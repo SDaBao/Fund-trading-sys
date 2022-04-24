@@ -12,6 +12,17 @@
           >
           <ul>
             <li>
+              <el-date-picker
+                v-model="tempTime"
+                type="date"
+                :disabled="!this.$store.state.operator.isAdmin"
+                placeholder="选择日期"
+                :picker-options="setSystemDateTime(tempTime)"
+                value-format="yyyy-MM-dd"
+                style="max-width:140px">
+              </el-date-picker>
+            </li>
+            <li>
               欢迎
               <el-popover placement="top" width="180" v-model="visible">
                 <p>确定退出登录吗？</p>
@@ -86,15 +97,15 @@
               <el-divider style="margin: 10px"></el-divider>
               <el-menu-item-group title="运维">
                 <el-menu-item
-                  index="2-1"
                   :disabled="false"
+                  @click="systemOption('清算')"
                 >
                   <i class="el-icon-setting"></i>
                   <span slot="title">清算</span>
                 </el-menu-item>
                 <el-menu-item
-                  index="2-2"
                   :disabled="false"
+                  @click="systemOption('回退')"
                 >
                   <i class="el-icon-setting"></i>
                   <span slot="title">回退</span>
@@ -136,7 +147,9 @@ export default {
   data () {
     return {
       is_admin: false,
-      visible: false
+      visible: false,
+      systemTime: '',
+      tempTime: ''
     }
   },
   created () {
@@ -152,6 +165,17 @@ export default {
       console.log(tolocation)
       this.$router.push(tolocation)
     }
+    // 获取系统时间
+    this.$axios
+      .get('/api/getSystemDate', {
+      })
+      .then((res) => {
+        console.log(res.data)
+        this.systemTime = res.data.date
+        this.tempTime = this.systemTime
+        console.log(this.systemTime)
+      })
+      .catch((failResponse) => {})
   },
   computed: {
     ...mapGetters(['getUser', 'getShowLogin']),
@@ -179,6 +203,59 @@ export default {
         this.$store.commit('setUser', sessionStorage.getItem('cstmr_name'))
         this.$store.commit('setUserID', sessionStorage.getItem('cstmr_id'))
       }
+    },
+    systemOption (option) {
+      var op = 0
+      if (option === '清算') {
+        op = 1
+      } else if (option === '回退') {
+        op = 2
+      }
+      this.$alert(this.systemTime + ' 系统将' + option, option, {
+        confirmButtonText: '确定',
+        callback: action => {
+          this.$axios
+            .get('/api/manage', {
+              params: {
+                op_type: op
+              }
+            })
+            .then((res) => {
+              console.log(res.data)
+              this.$message({
+                type: 'info',
+                message: `action: ${res.data.result}`
+              })
+            })
+            .catch((failResponse) => { })
+        }
+      })
+    },
+    setSystemDateTime (time) {
+      if (time === this.systemTime) {
+        return
+      }
+      this.$axios
+        .get('/api/setSystemDate', {
+          params: {
+            date: time
+          }
+        })
+        .then((res) => {
+          this.systemTime = time
+          console.log(res.data)
+          this.$message({
+            type: 'info',
+            message: `action: ${res.data}`
+          })
+        })
+        .catch((failResponse) => {
+          time = this.systemTime
+          this.$message({
+            type: 'info',
+            message: `action: ${failResponse}`
+          })
+        })
     }
   }
 }

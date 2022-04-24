@@ -98,7 +98,7 @@
                         :title="this.alTitle"
                         :type="this.alType"
                         :description="this.alDescription"
-                        :visible.sync="alertVisible">
+                        :visible.sync="this.alertVisible">
               </el-alert>
             </el-form>
           </el-dialog>
@@ -125,7 +125,7 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button plain
-                           @click="fundDetail(scope.row);updateFormVisible=true">修改</el-button>
+                           @click="fundDetail(scope.row);alertVisible=false;updateFormVisible=true">修改</el-button>
               </template>
               <el-dialog title="修改基金信息"
                          :visible.sync="updateFormVisible"
@@ -200,7 +200,7 @@
                             :title="this.alTitle"
                             :type="this.alType"
                             :description="this.alDescription"
-                            :visible.sync="alertVisible">
+                            :visible.sync="this.alertVisible">
                   </el-alert>
                 </el-form>
               </el-dialog>
@@ -284,6 +284,7 @@ export default {
         .catch((failResponse) => { alert('search ERR!') })
     },
     productUpdate () {
+      this.alertVisible = false
       let params = this.product
       this.$axios
         .get('/api/fund/update', {
@@ -297,6 +298,7 @@ export default {
         .catch((failResponse) => { })
     },
     productCreate () {
+      this.alertVisible = false
       let params = this.product
       this.$axios
         .get('/api/fund/add', {
