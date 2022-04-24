@@ -20,6 +20,7 @@
               placeholder="请输入内容"
               prefix-icon="el-icon-search"
               v-model="searchInput"
+              @input="getProductData()"
               style="width: 400px"
             >
             </el-input>
@@ -215,7 +216,7 @@ export default {
           this.productData = res.data.product_info
           console.log(this.productData)
         })
-        .catch((failResponse) => {})
+        .catch((failResponse) => { alert('search ERR!') })
     },
     riskWarning (productRisk) {
       console.log(productRisk + this.userRisk)
