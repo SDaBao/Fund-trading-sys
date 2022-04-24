@@ -102,18 +102,11 @@
         </el-row>
       </div>
       <div style="text-align: left; font-size: 20px">
-        <p>客户姓名: {{ this.$store.state.user.user_info[0].cstmr_name }}</p>
-        <p>
-          客户类型:
-          {{ cstmrTypeOrm[this.$store.state.user.user_info[0].cstmr_type] }}
-        </p>
-        <p>
-          证件类型:
-          {{
-            documentTypeOrm[this.$store.state.user.user_info[0].document_type]
-          }}
-        </p>
-        <p>证件号: {{ this.$store.state.user.user_info[0].document_num }}</p>
+        <p>客户姓名：{{ this.$store.state.user.user_info[0].cstmr_name }}</p>
+        <p>客户类型：{{ cstmrTypeOrm[this.$store.state.user.user_info[0].cstmr_type] }}</p>
+        <p>证件类型：{{ documentTypeOrm[this.$store.state.user.user_info[0].document_type] }}</p>
+        <p>证件号：  {{ this.$store.state.user.user_info[0].document_num }}</p>
+        <p>账户余额：{{ this.$store.state.user.user_info[0].account_balance }} 元</p>
       </div>
     </el-card>
   </div>

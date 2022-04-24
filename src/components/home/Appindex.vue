@@ -233,7 +233,12 @@ export default {
                 message: `action: ${res.data.result}`
               })
             })
-            .catch((failResponse) => { })
+            .catch((failResponse) => {
+              this.$message({
+                type: 'error',
+                message: `${failResponse}`
+              })
+            })
         }
       })
     },

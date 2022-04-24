@@ -5,38 +5,34 @@
   >
     <el-card
       class="box-card"
-      style="height: calc(100% - 40px); height: calc(100% - 40px); margin: 20px"
+      style="height: calc(100% - 40px); height: calc(100% - 40px); margin: 10px"
       shadow="hover"
     >
       <div>
-        <el-row>
-          <el-col :span="18">
-            <p style="font-size: 30px">资金信息</p>
-          </el-col>
-          <el-col :span="6">
+        <h1 style="font-size: 40px">资金信息</h1>
+        <el-dialog title="银行卡绑定"
+                    :visible.sync="FormVisible"
+                    center
+                    :append-to-body="true"
+                    :lock-scroll="false"
+                    width="40%">
+          <attachcard :isShow1="'true'"
+                      @close-form1="closeform1()"></attachcard>
+        </el-dialog>
+        <el-dialog title="充值"
+                    :visible.sync="Visible"
+                    center
+                    :append-to-body="true"
+                    :lock-scroll="false"
+                    width="40%">
+          <deposittocard :isShow="'true'" @close-form="closeform()"></deposittocard>
+        </el-dialog>
+        <el-row style="text-align: right">
             <el-button size="medium" @click="FormVisible=true"> 银行卡绑定 </el-button>
-            <el-dialog title="银行卡绑定"
-                       :visible.sync="FormVisible"
-                       center
-                       :append-to-body="true"
-                       :lock-scroll="false"
-                       width="30%">
-              <attachcard :isShow1="'true'"
-                          @close-form1="closeform1()"></attachcard>
-            </el-dialog>
             <el-button size="medium" @click="Visible=true"> 充值 </el-button>
-            <el-dialog title="充值"
-                       :visible.sync="Visible"
-                       center
-                       :append-to-body="true"
-                       :lock-scroll="false"
-                       width="30%">
-              <deposittocard :isShow="'true'" @close-form="closeform()"></deposittocard>
-            </el-dialog>
-          </el-col>
         </el-row>
         <el-row>
-          <el-descriptions class="margin-top" :column="2" border>
+          <el-descriptions class="margin-top" :column="2" border labelStyle="width:130px;">
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-user"></i>
@@ -45,9 +41,10 @@
               {{ this.cstmrName }}
             </el-descriptions-item>
           </el-descriptions>
-        </el-row>
-        <el-row v-for="(item, i) in this.$store.state.card.card_info" :key="i">
-          <el-descriptions class="margin-top" :column="2" border>
+          <el-descriptions class="margin-top" :column="2" border
+                           contentStyle="width:200px;"
+                           labelStyle="width:130px"
+                           v-for="(item, i) in this.$store.state.card.card_info" :key="i">
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-mobile-phone"></i>
@@ -55,12 +52,12 @@
               </template>
               {{ item.credit_id }}
             </el-descriptions-item>
-            <el-descriptions-item>
+            <el-descriptions-item :contentStyle="{'text-align': 'right'}">
               <template slot="label">
                 <i class="el-icon-location-outline"></i>
                 银行卡{{ i+1 }}余额
               </template>
-              {{ item.credit_balance }}
+              {{ item.credit_balance }}元
             </el-descriptions-item>
           </el-descriptions>
         </el-row>
@@ -125,7 +122,10 @@ export default {
 </script>
 
 <style scoped>
-.el-button {
+/* .el-button {
   margin-top: 40px;
+} */
+.el-row {
+  margin-bottom: 20px;
 }
 </style>

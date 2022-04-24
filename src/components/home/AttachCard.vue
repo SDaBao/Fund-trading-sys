@@ -50,12 +50,20 @@ export default {
         } })
         .then((res) => {
           console.log('请求成功')
-          alert('submit!')
+          this.$message({
+            type: 'info',
+            message: `${res.data}`
+          })
+          this.ruleForm.card = ''
           this.close1()
           console.log(res)
         })
         .catch((error) => {
-          console.log('请求失败')
+          this.$message({
+            type: 'error',
+            message: `绑定失败 ${error}`
+          })
+          this.ruleForm.card = ''
           console.log(error)
         })
     },

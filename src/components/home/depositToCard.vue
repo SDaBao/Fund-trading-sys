@@ -5,24 +5,22 @@
              ref="ruleForm"
              label-width="100px"
              class="demo-ruleForm">
-      <el-form-item label="银行卡选择"
-                    prop="card">
-        <el-select v-model="ruleForm.card"
-                   placeholder="请选择你要充值的银行卡">
-          <el-option label="银行卡1"
-                     value="card_1"></el-option>
-          <el-option label="银行卡2"
-                     value="card_2"></el-option>
+      <el-form-item label="银行卡" prop="card">
+        <el-select v-model="ruleForm.card" placeholder="选择银行卡">
+          <el-option label="银行卡"
+                     value="card_1"
+                     v-for="(item, i) in this.$store.state.card.card_info" :key="i"
+                     >
+            卡号：{{ item.credit_id }}
+          </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="充值金额"
-                    prop="money">
-        <el-input placeholder="金额"
-                  v-model="ruleForm.money"></el-input>
+      <el-form-item label="金额" prop="money">
+        <el-input placeholder="金额 0.00" v-model="ruleForm.money"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="priamry"
-                   @click="submitForm()">充值</el-button>
+        <el-button type="priamry" @click="submitForm(1)">充值</el-button>
+        <el-button type="priamry" @click="submitForm(2)">提现</el-button>
         <el-button @click="close()">取消</el-button>
       </el-form-item>
     </el-form>
@@ -51,25 +49,31 @@ export default {
     }
   },
   methods: {
-    submitForm () {
+    submitForm (type) {
       let url = '/api/bank_trade'
       this.cstmrID = sessionStorage.getItem('cstmr_id')
       this.$axios
         .get(url, { params: {
-          trade_type: 1,
+          trade_type: type,
           cstmr_id: this.cstmrID,
           credit_id: this.ruleForm.card,
           trade_value: this.ruleForm.money
         } })
         .then((res) => {
           console.log('请求成功')
-          alert('submit!')
+          this.$message({
+            type: 'info',
+            message: `${res.data}`
+          })
           this.close1()
           console.log(res)
         })
         .catch((error) => {
-          console.log('请求失败')
           console.log(error)
+          this.$message({
+            type: 'error',
+            message: `${error}`
+          })
         })
     },
     close () {
