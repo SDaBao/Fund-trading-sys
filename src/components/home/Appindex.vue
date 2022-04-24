@@ -17,7 +17,8 @@
                 type="date"
                 :disabled="!this.$store.state.operator.isAdmin"
                 placeholder="选择日期"
-                :picker-options="setSystemDateTime(tempTime)"
+                :picker-options="pickDate"
+                :change="setSystemDateTime(tempTime)"
                 value-format="yyyy-MM-dd"
                 style="max-width:140px">
               </el-date-picker>
@@ -149,7 +150,12 @@ export default {
       is_admin: false,
       visible: false,
       systemTime: '',
-      tempTime: ''
+      tempTime: '',
+      pickDate: {
+        disabledDate (current) {
+          return current.getDay() === 6 || current.getDay() === 0
+        }
+      }
     }
   },
   created () {
