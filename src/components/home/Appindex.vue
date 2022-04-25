@@ -36,9 +36,8 @@
                   >
                 </div>
                 <!-- <el-button type="text" slot="reference">{{this.$store.getters.getUser.userName}}</el-button> -->
-                <el-button type="goon" slot="reference">{{
-                  this.$store.getters.getOperatorName
-                }}</el-button>
+                <el-button type="goon" slot="reference">
+                  {{ operator }}</el-button>
               </el-popover>
             </li>
           </ul>
@@ -151,6 +150,7 @@ export default {
       visible: false,
       systemTime: '',
       tempTime: '',
+      operator: this.$store.state.operator.operator,
       pickDate: {
         disabledDate (current) {
           return current.getDay() === 6 || current.getDay() === 0
@@ -164,10 +164,17 @@ export default {
       // 如果已经登录，设置vuex登录状态
       const cname = sessionStorage.getItem('cstmr_name')
       const cid = sessionStorage.getItem('cstmr_id')
+      const isAdmin = sessionStorage.getItem('token')
       const tolocation = sessionStorage.getItem('location')
+      this.operator = sessionStorage.getItem()
       this.$store.commit('setUser', cname)
       this.$store.commit('setUserID', cid)
-      this.$store.commit('setShowLogin', true)
+      this.$store.commit('setAdmin', isAdmin)
+      if (isAdmin === 'AdminToken') {
+        this.$store.commit('setShowLogin', true)
+      } else {
+        this.$store.commit('setShowLogin', false)
+      }
       console.log(tolocation)
       this.$router.push(tolocation)
     }

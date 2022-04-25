@@ -28,11 +28,11 @@
           <deposittocard :isShow="'true'" @close-form="closeform()"></deposittocard>
         </el-dialog>
         <el-row style="text-align: right">
-            <el-button size="medium" @click="FormVisible=true"> 银行卡绑定 </el-button>
-            <el-button size="medium" @click="Visible=true"> 充值 </el-button>
+            <el-button size="medium" @click="FormVisible=true">银行卡绑定</el-button>
+            <el-button size="medium" @click="Visible=true">充值 / 解绑</el-button>
         </el-row>
         <el-row>
-          <el-descriptions class="margin-top" :column="2" border labelStyle="width:130px;">
+          <el-descriptions class="margin-top" :column="2" border labelStyle="width: 130px">
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-user"></i>
@@ -42,8 +42,8 @@
             </el-descriptions-item>
           </el-descriptions>
           <el-descriptions class="margin-top" :column="2" border
-                           contentStyle="width:200px;"
-                           labelStyle="width:130px"
+                           contentStyle="width: 200px"
+                           labelStyle="width: 130px"
                            v-for="(item, i) in this.$store.state.card.card_info" :key="i">
             <el-descriptions-item>
               <template slot="label">
@@ -112,9 +112,11 @@ export default {
       return 'text-align:center'
     },
     closeform () {
+      this.getCardInfo()
       this.Visible = false
     },
     closeform1 () {
+      this.getCardInfo()
       this.FormVisible = false
     }
   }

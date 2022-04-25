@@ -22,7 +22,7 @@
         <el-button
           type="primary"
           style="width: 100%; background: #505458; border: none"
-          v-on:click="login"
+          @click="login()"
           >登录</el-button
         >
       </el-form-item>
@@ -44,18 +44,23 @@ export default {
   },
   methods: {
     login () {
-      // this.$axios
-      //   .post('/login', {
-      //     username: this.loginForm.username,
-      //     password: this.loginForm.password
-      //   })
-      //   .then((successResponse) => {
-      //     if (successResponse.data.code === 200) {
-      //       sessionStorage.setItem('token', 'ownedToken')
-      //       this.$router.replace({ path: '/index' })
-      //     }
-      //   })
-      //   .catch((failResponse) => {})
+      this.$axios
+        .post('/api/Login', {
+          username: this.loginForm.username,
+          passwd: this.loginForm.password
+        })
+        .then((successResponse) => {
+          if (successResponse.data === 'true') {
+            sessionStorage.setItem('token', 'ownedToken')
+            sessionStorage.setItem('operator', this.loginForm.username)
+            this.$router.replace({ path: '/' })
+            this.$store.commit('setOperatorName', this.loginForm.username)
+          } else if (successResponse.data === 'false') {
+            alert('登录失败')
+            return ''
+          }
+        })
+        .catch((failResponse) => { return '' })
       if (this.loginForm.username === 'admin') {
         this.$store.commit('setAdmin', true)
         sessionStorage.setItem('token', 'AdminToken')

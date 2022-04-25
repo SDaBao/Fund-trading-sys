@@ -1,7 +1,7 @@
 export default {
   state: {
     isAdmin: false, // 是否是管理员
-    operator: 'ming' // 登录的操作人员
+    operator: 'admin' // 登录的操作人员
   },
   getters: {
     getOperatorName (state) {

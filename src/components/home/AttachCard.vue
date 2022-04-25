@@ -49,7 +49,14 @@ export default {
           credit_id: this.ruleForm.card
         } })
         .then((res) => {
-          console.log('请求成功')
+          console.log('res.data')
+          if (res.data === 'false') {
+            this.$message({
+              type: 'error',
+              message: `${res.data}`
+            })
+            return
+          }
           this.$message({
             type: 'info',
             message: `${res.data}`
