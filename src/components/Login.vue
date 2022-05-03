@@ -37,7 +37,7 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: ''
+        password: 'admin'
       },
       responseResult: []
     }
@@ -46,7 +46,7 @@ export default {
     login () {
       this.$axios
         .post('/api/Login', {
-          username: this.loginForm.username,
+          name: this.loginForm.username,
           passwd: this.loginForm.password
         })
         .then((successResponse) => {

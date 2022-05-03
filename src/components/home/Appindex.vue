@@ -187,6 +187,7 @@ export default {
         this.systemTime = res.data.date
         this.tempTime = this.systemTime
         console.log(this.systemTime)
+        sessionStorage.setItem('systemTime', this.systemTime)
       })
       .catch((failResponse) => {})
   },
@@ -262,6 +263,7 @@ export default {
         .then((res) => {
           this.systemTime = time
           console.log(res.data)
+          sessionStorage.setItem('systemTime', this.systemTime)
           this.$message({
             type: 'info',
             message: `action: ${res.data}`

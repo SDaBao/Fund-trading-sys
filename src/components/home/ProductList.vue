@@ -121,7 +121,7 @@
       </el-form>
     </el-dialog>
     <!-- 产品详情对话框 -->
-    <el-dialog :title="productName+' 基金代号：'+productID" :visible.sync="detailFormVisible">
+    <el-dialog :title="productName+' 基金代号：'+productID" :visible.sync="detailFormVisible" @open="openChart()">
       <el-form>
         <el-form-item label="基金公司" :label-width="formLabelWidth">
           <template>
@@ -143,12 +143,8 @@
             <span>{{ productPRFL }}</span>
           </template>
         </el-form-item>
-        <el-form-item label="产品净值" :label-width="formLabelWidth">
-          <template>
-            <span>{{ productPRFL }}</span>
-          </template>
-        </el-form-item>
       </el-form>
+      <div slot="footer" class="dialog-footer" id="valueEcharts" style="width: 100%;height: 300px;" center></div>
     </el-dialog>
   </div>
 </template>
@@ -291,6 +287,80 @@ export default {
         })
       this.tradeVal = ''
       this.tradeLoding = false
+    },
+    openChart () {
+      // 打开加载图表
+      this.$nextTick(() => {
+        this.drawChart()
+      })
+    },
+    drawChart () {
+      // 基于准备好的dom，初始化echarts实例  这个和上面的main对应
+      let myChart = this.$echarts.init(document.getElementById('valueEcharts'))
+      // 指定图表的配置项和数据
+      this.$nextTick(() => {
+        // 自适应宽度
+        myChart.resize()
+      })
+      var datetime = sessionStorage.getItem('systemTime')
+      const dataList = []
+      const valueList = []
+      if (datetime === null) {
+        datetime = '2022-04-28'
+      }
+      this.$axios
+        .get('/api/fund/value_search', {
+          params: {
+            prdct_id: this.productID,
+            datetime: datetime,
+            search_type: 2
+          }
+        })
+        .then((res) => {
+          console.log(datetime)
+          console.log(res.data)
+          if (res.data === 'err datetime') {
+            this.$message({
+              type: 'warning',
+              message: `${res.data}`
+            })
+            return
+          }
+          for (var i = 0; i < res.data.n; i++) {
+            dataList.push(res.data.valueInfo[i].mrkt_time)
+            valueList.push(res.data.valueInfo[i].prdct_val)
+          }
+          console.log(dataList, valueList)
+          let option = {
+            title: {
+              left: 'center',
+              text: datetime + '净值'
+            },
+            xAxis: {
+              type: 'category',
+              data: dataList
+            },
+            yAxis: {
+              type: 'value'
+            },
+            series: [
+              {
+                data: valueList,
+                type: 'line'
+              }
+            ]
+          }
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option)
+        })
+        .catch((failResponse) => {
+          console.log(datetime)
+          console.log(failResponse)
+          this.$message({
+            type: 'warning',
+            message: `${failResponse}`
+          })
+        })
     }
   }
 }

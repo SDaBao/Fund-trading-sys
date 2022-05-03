@@ -8,6 +8,8 @@ import ElementUI from 'element-ui'
 import store from './store'
 import 'element-ui/lib/theme-chalk/index.css'
 import Global from './Global'
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 Vue.use(Global)
 // 设置反向代理，前端请求默认发送到 http://localhost:8443/api
 var axios = require('axios')
