@@ -28,13 +28,14 @@
             >
               修改
             </el-button>
+            <!-- 修改信息对话框 -->
             <el-dialog
-              title="开户"
+              title="修改信息"
               :visible.sync="dialogFormVisible"
               center
               :append-to-body="true"
               :lock-scroll="false"
-              width="30%"
+              width="500px"
             >
               <el-form
                 :model="modifyCstmrForm"
@@ -45,8 +46,9 @@
               >
                 <el-form-item label="客户类型" prop="cstmr_type">
                   <el-select
-                    v-model="modifyCstmrForm.cstmr_type"
+                    v-model="cstmrTypeOrm[modifyCstmrForm.cstmr_type]"
                     placeholder="请选择客户类型"
+                    style="width:300px"
                   >
                     <el-option label="个人" value="1"></el-option>
                     <el-option label="机构" value="2"></el-option>
@@ -56,12 +58,14 @@
                   <el-input
                     v-model="modifyCstmrForm.cstmr_name"
                     placeholder="点击输入姓名"
+                    style="width:300px"
                   ></el-input>
                 </el-form-item>
                 <el-form-item label="证件类型" prop="document_type">
                   <el-select
-                    v-model="modifyCstmrForm.document_type"
+                    v-model="documentTypeOrm[modifyCstmrForm.document_type]"
                     placeholder="请选择证件类型"
+                    style="width:300px"
                   >
                     <el-option label="身份证" value="1"></el-option>
                     <el-option label="护照" value="2"></el-option>
@@ -73,7 +77,19 @@
                   <el-input
                     v-model="modifyCstmrForm.document_num"
                     placeholder="点击输入证件号码"
+                    style="width:300px"
                   ></el-input>
+                </el-form-item>
+                <el-form-item label="风险等级" prop="risk_rating">
+                  <el-select
+                    v-model="riskRatingOrm[modifyCstmrForm.risk_rating]"
+                    placeholder="请选择风险等级"
+                    style="width:300px"
+                  >
+                    <el-option label="低" value="0"></el-option>
+                    <el-option label="中" value="1"></el-option>
+                    <el-option label="高" value="2"></el-option>
+                  </el-select>
                 </el-form-item>
                 <el-form-item>
                   <el-button
@@ -83,10 +99,7 @@
                       dialogFormVisible = false;
                       getUserInfo();
                     "
-                    >确 认</el-button
-                  >
-                  <el-button @click="resetForm('modifyCstmrForm')"
-                    >重 置</el-button
+                    >修 改</el-button
                   >
                   <el-button
                     @click="
@@ -95,6 +108,86 @@
                     "
                     >取 消</el-button
                   >
+                  <el-button @click="riskFormVisible=true"
+                    >风险评估</el-button
+                  >
+                </el-form-item>
+              </el-form>
+            </el-dialog>
+            <!-- 风险评估对话框 -->
+            <el-dialog
+              title="风险评估"
+              :visible.sync="riskFormVisible"
+              center
+              :append-to-body="true"
+              :lock-scroll="false"
+              width="600px"
+            >
+              <el-form
+                :rules="rules"
+                label-width="100px"
+                class="testForm"
+              >
+                <el-form-item label="风险波动">
+                  <el-select
+                    v-model="riskForm.wave"
+                    placeholder="您在投资中可耐受何种程度的风险波动"
+                    style="width:400px"
+                  >
+                    <el-option label="低" value="1"></el-option>
+                    <el-option label="中" value="2"></el-option>
+                    <el-option label="高" value="3"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="投资目标">
+                  <el-select
+                    v-model="riskForm.goal"
+                    placeholder="您的投资目标是"
+                    style="width:400px"
+                  >
+                    <el-option label="尽可能保证本金安全，不在乎收益率" value="1"></el-option>
+                    <el-option label="追求较多的收益，可以承担一定的风险" value="2"></el-option>
+                    <el-option label="实现资产的增长，愿意承担很大的风险" value="3"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="投资经验">
+                  <el-select
+                    v-model="riskForm.exp"
+                    placeholder="您有多少年基金投资经验"
+                    style="width:400px"
+                  >
+                    <el-option label=" 1 年以下" value="1"></el-option>
+                    <el-option label=" 1 - 3 年" value="2"></el-option>
+                    <el-option label=" 3 年及以上" value="3"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="收入水平" style="margin-bottom: 50px;">
+                  <el-slider
+                    v-model="riskForm.level"
+                    show-input
+                    input-size="mini"
+                    :min=1
+                    :max=500
+                    :marks="{1:'1万以下',300:{style:{overflow:ellipsis},label:'300万以上'}}"
+                    style="margin-left:20px;margin-right:50px"
+                    >
+                  </el-slider>
+                </el-form-item>
+                <el-form-item label="收入来源">
+                  <el-select
+                    v-model="riskForm.rec"
+                    placeholder="您的收入主要来源"
+                    style="width:400px"
+                  >
+                    <el-option label="工资奖金、劳务报酬" value="1"></el-option>
+                    <el-option label="生产经营所得" value="2"></el-option>
+                    <el-option label="利息、股息、转让等金融资产收入" value="3"></el-option>
+                    <el-option label="出租、出售房地产等非金融资产收入" value="4"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item>
+                  <el-button @click="riskTest()">风险评估</el-button>
+                  <el-button @click="valueFormVisible = false;">取 消</el-button>
                 </el-form-item>
               </el-form>
             </el-dialog>
@@ -113,7 +206,7 @@
 </template>
 
 <script>
-import { CSTMR_TYPE_ORM, DOCUMENT_TYPE_ORM } from '../../constant'
+import { CSTMR_TYPE_ORM, DOCUMENT_TYPE_ORM, RISK_RATING_ORM } from '../../constant'
 
 // import $ from 'jquery'
 
@@ -128,11 +221,20 @@ export default {
   data () {
     this.cstmrTypeOrm = CSTMR_TYPE_ORM
     this.documentTypeOrm = DOCUMENT_TYPE_ORM
+    this.riskRatingOrm = RISK_RATING_ORM
     return {
       dialogFormVisible: false,
+      riskFormVisible: false,
       cstmrID: '',
       modifyCstmrForm: {
         account_balance: Number
+      },
+      riskForm: {
+        wave: '',
+        goal: '',
+        exp: '',
+        level: '',
+        rec: ''
       },
       rules: {
         cstmr_name: [
@@ -190,6 +292,15 @@ export default {
           console.log('请求失败')
           console.log(error)
         })
+    },
+    riskTest () {
+      var result = '中'
+      this.$alert(result, '风险评估结果', {
+        confirmButtonText: '确定',
+        callback: action => {
+          this.riskFormVisible = false
+        }
+      })
     },
     headStyle () {
       return 'text-align:center'
