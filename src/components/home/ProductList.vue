@@ -144,7 +144,16 @@
           </template>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer" id="valueEcharts" style="width: 100%;height: 300px;" center></div>
+      <el-select size="small" v-model="valueType" placeholder="当月净值" @change="drawChart()" style="float:right;width:100px;margin-right:30px;">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      <div slot="footer" class="dialog-footer" id="valueEcharts" style="width: 100%;height: 300px;" center>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -182,7 +191,18 @@ export default {
       productCOMP: '',
       productRisk: '',
       productPRFL: '',
-      productSale: ''
+      productSale: '',
+      options: [{
+        value: '1',
+        label: '当月净值'
+      }, {
+        value: '2',
+        label: '7日净值'
+      }, {
+        value: '3',
+        label: '30日净值'
+      }],
+      valueType: ''
     }
   },
   methods: {
@@ -291,7 +311,9 @@ export default {
     openChart () {
       // 打开加载图表
       this.$nextTick(() => {
+        this.valueType = 1
         this.drawChart()
+        this.valueType = '当月净值'
       })
     },
     drawChart () {
@@ -303,6 +325,7 @@ export default {
         myChart.resize()
       })
       var datetime = sessionStorage.getItem('systemTime')
+      var text = this.productName + ' ' + this.options[this.valueType - 1].label
       const dataList = []
       const valueList = []
       if (datetime === null) {
@@ -313,7 +336,7 @@ export default {
           params: {
             prdct_id: this.productID,
             datetime: datetime,
-            search_type: 2
+            search_type: this.valueType
           }
         })
         .then((res) => {
@@ -326,22 +349,30 @@ export default {
             })
             return
           }
-          for (var i = 0; i < res.data.n; i++) {
+          for (var i = res.data.n - 1; i >= 0; i--) {
             dataList.push(res.data.valueInfo[i].mrkt_time)
             valueList.push(res.data.valueInfo[i].prdct_val)
           }
           console.log(dataList, valueList)
           let option = {
+            tooltip: {
+              trigger: 'axis',
+              extraCssText: 'center:right;margin:15px;'
+            },
             title: {
-              left: 'center',
-              text: datetime + '净值'
+              left: 'left',
+              text: text
             },
             xAxis: {
               type: 'category',
               data: dataList
             },
             yAxis: {
-              type: 'value'
+              type: 'value',
+              show: true,
+              axisLine: {show: false},
+              axisTick: {show: false},
+              splitLine: {show: false}
             },
             series: [
               {
