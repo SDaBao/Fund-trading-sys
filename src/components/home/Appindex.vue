@@ -117,13 +117,13 @@
                   <i class="el-icon-setting"></i>
                   <span slot="title">产品管理</span>
                 </el-menu-item>
-                <el-menu-item
+                <!-- <el-menu-item
                   index="/businesslisttoall"
                   :disabled="false"
                 >
                   <i class="el-icon-setting"></i>
                   <span slot="title">订单查询</span>
-                </el-menu-item>
+                </el-menu-item> -->
               </el-menu-item-group>
             </div>
           </el-menu>
@@ -225,30 +225,30 @@ export default {
       } else if (option === '回退') {
         op = 2
       }
-      this.$alert(this.systemTime + ' 系统将' + option, option, {
+      this.$confirm(this.systemTime + ' 系统将' + option, option, {
         confirmButtonText: '确定',
-        callback: action => {
-          this.$axios
-            .get('/api/manage', {
-              params: {
-                op_type: op
-              }
+        cancelButtonText: '取消'
+      }).then(() => {
+        this.$axios
+          .get('/api/manage', {
+            params: {
+              op_type: op
+            }
+          })
+          .then((res) => {
+            console.log(res.data)
+            this.$message({
+              type: 'info',
+              message: `action: ${res.data.result}`
             })
-            .then((res) => {
-              console.log(res.data)
-              this.$message({
-                type: 'info',
-                message: `action: ${res.data.result}`
-              })
+          })
+          .catch((failResponse) => {
+            this.$message({
+              type: 'error',
+              message: `${failResponse}`
             })
-            .catch((failResponse) => {
-              this.$message({
-                type: 'error',
-                message: `${failResponse}`
-              })
-            })
-        }
-      })
+          })
+      }).catch(() => {})
     },
     setSystemDateTime (time) {
       if (time === this.systemTime) {
