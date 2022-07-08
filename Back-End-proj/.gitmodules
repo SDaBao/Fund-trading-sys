@@ -1,0 +1,4 @@
+[submodule "vue_proj"]
+	url  = https://gitee.com/hang-seng-electronics-co-ltd_2/vue_proj
+	path = vue_proj
+

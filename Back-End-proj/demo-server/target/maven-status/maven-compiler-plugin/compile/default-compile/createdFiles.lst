@@ -1,0 +1,7 @@
+com\demo\server\UserServiceImpl.class
+com\demo\server\TradeDAOMapper.class
+com\demo\server\MyServer.class
+com\demo\server\ProductServiceImpl.class
+com\demo\server\TradeServiceImpl.class
+com\demo\server\ProductDAOMapper.class
+com\demo\server\UserDAOMapper.class
