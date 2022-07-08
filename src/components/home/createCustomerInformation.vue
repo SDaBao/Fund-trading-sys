@@ -9,8 +9,8 @@
     >
       <el-form-item label="客户类型" prop="cstmr_type">
         <el-select v-model="ruleForm.cstmr_type" placeholder="请选择客户类型">
-          <el-option label="个人" value="1"></el-option>
-          <el-option label="机构" value="2"></el-option>
+          <el-option label="个人" value="0"></el-option>
+          <el-option label="机构" value="1"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="客户姓名" prop="cstmr_name">

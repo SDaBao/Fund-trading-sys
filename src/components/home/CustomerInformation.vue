@@ -185,10 +185,10 @@
                     <el-option label="出租、出售房地产等非金融资产收入" value="4"></el-option>
                   </el-select>
                 </el-form-item>
-                <div slot="footer" class="dialog-footer">
+                <el-form-item>
                   <el-button @click="riskTest()">风险评估</el-button>
                   <el-button @click="valueFormVisible = false;">取 消</el-button>
-                </div>
+                </el-form-item>
               </el-form>
             </el-dialog>
           </el-col>
