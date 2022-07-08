@@ -15,7 +15,7 @@
 技术栈：前端基于 Vue.js ，后端基于 Java 框架 JRES 与 MySQL8
 
 功能模块设计：
-<img src="https://github.com/SDaBao/Fund-trading-sys/blob/dd868ae2779f18fdc3178b2451a941e5e77f51fc/user-info.png">
+<img src="https://raw.githubusercontent.com/SDaBao/Fund-trading-sys/master/user-info.png">
 
 ## Build Setup
 
